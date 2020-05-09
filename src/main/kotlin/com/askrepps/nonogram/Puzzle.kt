@@ -25,6 +25,7 @@
 package com.askrepps.nonogram
 
 import com.askrepps.nonogram.internal.allNonnegative
+import com.askrepps.nonogram.internal.anyZeroStandsAlone
 
 /**
  * A nonogram puzzle definition (not including cell contents).
@@ -51,9 +52,7 @@ data class PuzzleDefinition(
         require(rowHints.all { it.allNonnegative } && columnHints.all { it.allNonnegative }) {
             "Puzzle must have non-negative hint values"
         }
-        require(rowHints.all { it.size == 1 || !it.contains(0) } &&
-                columnHints.all { it.size == 1 || !it.contains(0) }
-        ) {
+        require(rowHints.all { it.anyZeroStandsAlone } && columnHints.all { it.anyZeroStandsAlone }) {
             "Hint values of zero must be the only value in that row or column"
         }
         require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {

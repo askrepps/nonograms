@@ -28,7 +28,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import org.junit.Test
 
-class HelpersTest {
+class AllNonnegativeTest {
     @Test
     fun testEmptyListAllNonnegative() {
         assertThat(emptyList<Int>().allNonnegative, equalTo(true))
