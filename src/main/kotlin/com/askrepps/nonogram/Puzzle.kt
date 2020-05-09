@@ -48,7 +48,7 @@ data class PuzzleDefinition(
         require(rowHints.all { it.isNotEmpty() } && columnHints.all { it.isNotEmpty() }) {
             "Puzzle must have hint values for every row and column"
         }
-        require(rowHints.allNonnegative() && columnHints.allNonnegative()) {
+        require(rowHints.all { it.allNonnegative } && columnHints.all { it.allNonnegative }) {
             "Puzzle must have non-negative hint values"
         }
         require(rowHints.all { it.size == 1 || !it.contains(0) } &&

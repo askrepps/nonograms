@@ -24,9 +24,5 @@
 
 package com.askrepps.nonogram.internal
 
-/** Check if all [Int] elements in a two-dimensional jagged [Iterable] are non-negative. */
-@JvmName("allNonnegativeNested")
-internal fun Iterable<Iterable<Int>>.allNonnegative() = all { it.allNonnegative() }
-
 /** Check if all [Int] elements in an [Iterable] are non-negative. */
-internal fun Iterable<Int>.allNonnegative() = all { it >= 0 }
+internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }

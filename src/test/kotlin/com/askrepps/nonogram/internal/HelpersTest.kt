@@ -31,96 +31,62 @@ import org.junit.Test
 class HelpersTest {
     @Test
     fun testEmptyListAllNonnegative() {
-        assertThat(emptyList<Int>().allNonnegative(), equalTo(true))
+        assertThat(emptyList<Int>().allNonnegative, equalTo(true))
     }
 
     @Test
     fun testSingleZeroValueAllNonnegative() {
-        assertThat(listOf(0).allNonnegative(), equalTo(true))
+        assertThat(listOf(0).allNonnegative, equalTo(true))
     }
 
     @Test
     fun testSinglePositiveValueAllNonnegative() {
-        assertThat(listOf(1).allNonnegative(), equalTo(true))
-        assertThat(listOf(42).allNonnegative(), equalTo(true))
+        assertThat(listOf(1).allNonnegative, equalTo(true))
+        assertThat(listOf(42).allNonnegative, equalTo(true))
     }
 
     @Test
     fun testMultipleNonnegativeValuesAllNonnegative() {
-        assertThat(listOf(1, 0, 7, 42).allNonnegative(), equalTo(true))
+        assertThat(listOf(1, 0, 7, 42).allNonnegative, equalTo(true))
     }
 
     @Test
     fun testSingleNegativeValueNotAllNonnegative() {
-        assertThat(listOf(-1).allNonnegative(), equalTo(false))
-        assertThat(listOf(-7).allNonnegative(), equalTo(false))
+        assertThat(listOf(-1).allNonnegative, equalTo(false))
+        assertThat(listOf(-7).allNonnegative, equalTo(false))
     }
 
     @Test
     fun testOneNegativeValueNotAllNonnegative() {
-        assertThat(listOf(-1, 0, 7, 42).allNonnegative(), equalTo(false))
-        assertThat(listOf(1, 0, -7, 42).allNonnegative(), equalTo(false))
-        assertThat(listOf(1, 0, 7, -42).allNonnegative(), equalTo(false))
+        assertThat(listOf(-1, 0, 7, 42).allNonnegative, equalTo(false))
+        assertThat(listOf(1, 0, -7, 42).allNonnegative, equalTo(false))
+        assertThat(listOf(1, 0, 7, -42).allNonnegative, equalTo(false))
     }
 
     @Test
     fun testAllNegativeValuesNotAllNonnegative() {
-        assertThat(listOf(-1, -7, -42).allNonnegative(), equalTo(false))
-    }
-
-    @Test
-    fun testEmptyNestedListAllNonnegative() {
-        assertThat(emptyList<List<Int>>().allNonnegative(), equalTo(true))
-    }
-
-    @Test
-    fun testMultipleNonnegativeListsAllNonnegative() {
-        assertThat(listOf(listOf(0), listOf(1, 2, 3)).allNonnegative(), equalTo(true))
-    }
-
-    @Test
-    fun testOneNestedNegativeValueNotAllNonnegative() {
-        assertThat(listOf(listOf(1, 2), listOf(3, -4)).allNonnegative(), equalTo(false))
-        assertThat(listOf(listOf(-1, 2), listOf(3, 4)).allNonnegative(), equalTo(false))
-    }
-
-    @Test
-    fun testAllNestedNegativeValuesNotAllNonnegative() {
-        assertThat(listOf(listOf(-1, -2), listOf(-3, -4)).allNonnegative(), equalTo(false))
+        assertThat(listOf(-1, -7, -42).allNonnegative, equalTo(false))
     }
 
     @Test
     fun testOtherIterableTypesAllNonnegative() {
-        assertThat(emptySet<Int>().allNonnegative(), equalTo(true))
-        assertThat(setOf(0).allNonnegative(), equalTo(true))
-        assertThat(setOf(1, 0, 7, 42).allNonnegative(), equalTo(true))
+        assertThat(emptySet<Int>().allNonnegative, equalTo(true))
+        assertThat(setOf(0).allNonnegative, equalTo(true))
+        assertThat(setOf(1, 0, 7, 42).allNonnegative, equalTo(true))
 
-        assertThat((0 until 0).allNonnegative(), equalTo(true))
-        assertThat((0..0).allNonnegative(), equalTo(true))
-        assertThat((0..10).allNonnegative(), equalTo(true))
+        assertThat((0 until 0).allNonnegative, equalTo(true))
+        assertThat((0..0).allNonnegative, equalTo(true))
+        assertThat((0..10).allNonnegative, equalTo(true))
     }
 
     @Test
     fun testOtherIterableTypesNotAllNonnegative() {
-        assertThat(setOf(-1).allNonnegative(), equalTo(false))
-        assertThat(setOf(1, 0, -7, 42).allNonnegative(), equalTo(false))
-        assertThat(setOf(-1, -7, -42).allNonnegative(), equalTo(false))
+        assertThat(setOf(-1).allNonnegative, equalTo(false))
+        assertThat(setOf(1, 0, -7, 42).allNonnegative, equalTo(false))
+        assertThat(setOf(-1, -7, -42).allNonnegative, equalTo(false))
 
-        assertThat((-1..-1).allNonnegative(), equalTo(false))
-        assertThat((-1..10).allNonnegative(), equalTo(false))
-        assertThat((-10..-1).allNonnegative(), equalTo(false))
-    }
-
-    @Test
-    fun testOtherNestedIterableTypesAllNonnegative() {
-        assertThat(setOf(setOf(0), setOf(1, 2, 3)).allNonnegative(), equalTo(true))
-        assertThat(listOf(setOf(1, 2, 3), listOf(4, 5, 6)).allNonnegative(), equalTo(true))
-    }
-
-    @Test
-    fun testOtherNestedIterableTypesNotAllNonnegative() {
-        assertThat(listOf(setOf(1, 2), listOf(3, -4)).allNonnegative(), equalTo(false))
-        assertThat(setOf(listOf(-1, 2), setOf(3, 4)).allNonnegative(), equalTo(false))
-        assertThat(listOf(setOf(-1, -2), setOf(-3, -4)).allNonnegative(), equalTo(false))
+        assertThat((-1..-1).allNonnegative, equalTo(false))
+        assertThat((-1..10).allNonnegative, equalTo(false))
+        assertThat((-10..-1).allNonnegative, equalTo(false))
     }
 }
