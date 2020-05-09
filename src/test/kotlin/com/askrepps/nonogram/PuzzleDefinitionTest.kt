@@ -65,14 +65,14 @@ class PuzzleDefinitionTest {
                 listOf(3),
                 listOf(3, 1),
                 listOf(4),
-                listOf(1)
+                listOf(0)
             ),
             listOf(
                 listOf(1, 1),
                 listOf(4),
                 listOf(4),
                 listOf(2, 1),
-                listOf(1, 3)
+                listOf(1, 2)
             )
         )
     }
@@ -129,6 +129,18 @@ class PuzzleDefinitionTest {
         )
         assertThat(
             { PuzzleDefinition(2, 2, listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1, 1, -1))) },
+            throws<IllegalArgumentException>()
+        )
+    }
+
+    @Test
+    fun testHintValueZeroBesideOtherValueThrowsException() {
+        assertThat(
+            { PuzzleDefinition(2, 2, listOf(listOf(1, 0), listOf(0)), listOf(listOf(1), listOf(0))) },
+            throws<IllegalArgumentException>()
+        )
+        assertThat(
+            { PuzzleDefinition(2, 2, listOf(listOf(1), listOf(0)), listOf(listOf(0, 1), listOf(0))) },
             throws<IllegalArgumentException>()
         )
     }

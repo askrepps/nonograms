@@ -49,6 +49,11 @@ data class PuzzleDefinition(
         require(rowHints.all { it.all { x -> x >= 0 } } && columnHints.all { it.all { x -> x >= 0 } }) {
             "Puzzle must have non-negative hint values"
         }
+        require(rowHints.all { it.size == 1 || !it.contains(0) } &&
+                columnHints.all { it.size == 1 || !it.contains(0) }
+        ) {
+            "Hint values of zero must be the only value in that row or column"
+        }
         require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {
             "Puzzle must have the same total squares in row and column hints"
         }
