@@ -27,6 +27,7 @@ package com.askrepps.nonogram
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.throws
 import org.junit.Test
+import java.lang.Integer.max
 
 class PuzzleDefinitionTest {
     @Test
@@ -114,4 +115,9 @@ class PuzzleDefinitionTest {
 }
 
 private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
-        PuzzleDefinition(rows, columns, List(rows) { listOf(1) }, List(columns) { listOf(1) })
+        PuzzleDefinition(
+                rows,
+                columns,
+                List(max(rows, 0)) { listOf(1) },
+                List(max(columns, 0)) { listOf(1) }
+        )
