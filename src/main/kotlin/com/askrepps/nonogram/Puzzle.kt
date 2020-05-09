@@ -37,6 +37,15 @@ data class PuzzleDefinition(
     val columnHints: List<List<Int>>
 ) {
     init {
-        require(rows > 0 && columns > 0) { "Puzzle must have positive dimensions" }
+        // validate puzzle definition
+        require(rows > 0 && columns > 0) {
+            "Puzzle must have positive dimensions"
+        }
+        require(rowHints.size == rows && columnHints.size == columns) {
+            "Puzzle must have hints for every row and column"
+        }
+        require(rowHints.all { it.isNotEmpty() } && columnHints.all { it.isNotEmpty() }) {
+            "Puzzle must have hint values for every row and column"
+        }
     }
 }

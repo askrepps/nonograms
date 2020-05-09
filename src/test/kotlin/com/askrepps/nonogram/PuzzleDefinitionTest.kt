@@ -75,7 +75,12 @@ class PuzzleDefinitionTest {
                 )
         )
     }
+
+    @Test
+    fun testWrongHintDimensionsThrowsException() {
+        assertThat({ PuzzleDefinition(1, 1, emptyList(), emptyList()) }, throws<IllegalArgumentException>())
+    }
 }
 
 private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
-        PuzzleDefinition(rows, columns, emptyList(), emptyList())
+        PuzzleDefinition(rows, columns, List(rows) { listOf(1) }, List(columns) { listOf(1) })
