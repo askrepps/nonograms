@@ -22,32 +22,16 @@
  * SOFTWARE.
  */
 
-plugins {
-    java
-    kotlin("jvm") version "1.3.72"
-}
+package com.askrepps.nonogram
 
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    testImplementation("junit", "junit", "4.12")
-    testImplementation("com.natpryce", "hamkrest", "1.7.0.3")
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
-tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+/**
+ * Information needed to define a nonogram puzzle
+ *
+ * @property rows the number of rows (must be positive)
+ * @property columns the number of columns (must be positive)
+ */
+data class PuzzleDefinition(val rows: Int, val columns: Int) {
+    init {
+        require(rows > 0 && columns > 0) { "Puzzle must have positive dimensions" }
     }
 }
