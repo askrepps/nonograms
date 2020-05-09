@@ -58,78 +58,78 @@ class PuzzleDefinitionTest {
         PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1)))
         PuzzleDefinition(2, 2, listOf(listOf(2), listOf(1)), listOf(listOf(1), listOf(2)))
         PuzzleDefinition(
-                5,
-                5,
-                listOf(
-                        listOf(5),
-                        listOf(3),
-                        listOf(3, 1),
-                        listOf(4),
-                        listOf(1)
-                ),
-                listOf(
-                        listOf(1, 1),
-                        listOf(4),
-                        listOf(4),
-                        listOf(2, 1),
-                        listOf(1, 3)
-                )
+            5,
+            5,
+            listOf(
+                listOf(5),
+                listOf(3),
+                listOf(3, 1),
+                listOf(4),
+                listOf(1)
+            ),
+            listOf(
+                listOf(1, 1),
+                listOf(4),
+                listOf(4),
+                listOf(2, 1),
+                listOf(1, 3)
+            )
         )
     }
 
     @Test
     fun testInvalidHintDimensionsThrowsException() {
         assertThat(
-                { PuzzleDefinition(1, 1, emptyList(), emptyList()) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, emptyList(), emptyList()) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(listOf(1)), emptyList()) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(listOf(1)), emptyList()) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(listOf(1))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(listOf(1))) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(emptyList())) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(emptyList())) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(emptyList())) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(emptyList())) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1))) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1), listOf(1))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1), listOf(1))) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1), listOf(1))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1), listOf(1))) },
+            throws<IllegalArgumentException>()
         )
     }
 
     @Test
     fun testInconsistentHintsThrowsException() {
         assertThat(
-                { PuzzleDefinition(2, 2, listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(2, 2, listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2))) },
+            throws<IllegalArgumentException>()
         )
         assertThat(
-                { PuzzleDefinition(2, 2, listOf(listOf(2), listOf(2)), listOf(listOf(1), listOf(1))) },
-                throws<IllegalArgumentException>()
+            { PuzzleDefinition(2, 2, listOf(listOf(2), listOf(2)), listOf(listOf(1), listOf(1))) },
+            throws<IllegalArgumentException>()
         )
     }
 }
 
 private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
-        PuzzleDefinition(
-                rows,
-                columns,
-                List(max(rows, 0)) { listOf(0) },
-                List(max(columns, 0)) { listOf(0) }
-        )
+    PuzzleDefinition(
+        rows,
+        columns,
+        List(max(rows, 0)) { listOf(0) },
+        List(max(columns, 0)) { listOf(0) }
+    )
