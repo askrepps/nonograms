@@ -114,6 +114,18 @@ class PuzzleDefinitionTest {
     }
 
     @Test
+    fun testNegativeHintValuesThrowsException() {
+        assertThat(
+            { PuzzleDefinition(2, 2, listOf(listOf(2), listOf(-1)), listOf(listOf(0), listOf(1))) },
+            throws<IllegalArgumentException>()
+        )
+        assertThat(
+            { PuzzleDefinition(2, 2, listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1))) },
+            throws<IllegalArgumentException>()
+        )
+    }
+
+    @Test
     fun testInconsistentHintsThrowsException() {
         assertThat(
             { PuzzleDefinition(2, 2, listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2))) },
