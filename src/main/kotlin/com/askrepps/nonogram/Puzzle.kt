@@ -25,10 +25,9 @@
 package com.askrepps.nonogram
 
 /**
- * Information needed to define a nonogram puzzle
+ * A nonogram puzzle definition (not including cell contents).
  *
- * @property rows the number of rows (must be positive)
- * @property columns the number of columns (must be positive)
+ * @throws IllegalArgumentException if the puzzle definition is invalid.
  */
 data class PuzzleDefinition(
     val rows: Int,
