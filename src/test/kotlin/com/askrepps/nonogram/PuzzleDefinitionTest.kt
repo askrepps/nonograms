@@ -112,12 +112,24 @@ class PuzzleDefinitionTest {
                 throws<IllegalArgumentException>()
         )
     }
+
+    @Test
+    fun testInconsistentHintsThrowsException() {
+        assertThat(
+                { PuzzleDefinition(2, 2, listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2))) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(2, 2, listOf(listOf(2), listOf(2)), listOf(listOf(1), listOf(1))) },
+                throws<IllegalArgumentException>()
+        )
+    }
 }
 
 private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
         PuzzleDefinition(
                 rows,
                 columns,
-                List(max(rows, 0)) { listOf(1) },
-                List(max(columns, 0)) { listOf(1) }
+                List(max(rows, 0)) { listOf(0) },
+                List(max(columns, 0)) { listOf(0) }
         )

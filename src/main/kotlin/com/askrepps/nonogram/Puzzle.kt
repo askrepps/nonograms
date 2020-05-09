@@ -47,5 +47,8 @@ data class PuzzleDefinition(
         require(rowHints.all { it.isNotEmpty() } && columnHints.all { it.isNotEmpty() }) {
             "Puzzle must have hint values for every row and column"
         }
+        require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {
+            "Puzzle must have the same total squares in row and column hints"
+        }
     }
 }
