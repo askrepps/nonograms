@@ -50,5 +50,10 @@ data class PuzzleDefinition(
         require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {
             "Puzzle must have the same total squares in row and column hints"
         }
+        require(rowHints.all { it.sum() <= columns - it.size + 1 } &&
+                columnHints.all { it.sum() <= rows - it.size + 1 }
+        ) {
+            "Puzzle must have all hints fit in their corresponding row or column"
+        }
     }
 }
