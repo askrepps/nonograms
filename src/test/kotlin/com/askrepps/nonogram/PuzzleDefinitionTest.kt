@@ -31,24 +31,51 @@ import org.junit.Test
 class PuzzleDefinitionTest {
     @Test
     fun testValidDimensionsDoNotThrowExceptions() {
-        PuzzleDefinition(1, 1)
-        PuzzleDefinition(1, 5)
-        PuzzleDefinition(5, 1)
-        PuzzleDefinition(5, 5)
-        PuzzleDefinition(10, 10)
-        PuzzleDefinition(15, 15)
+        createDummyDefinitionWithDimensions(1, 1)
+        createDummyDefinitionWithDimensions(1, 5)
+        createDummyDefinitionWithDimensions(5, 1)
+        createDummyDefinitionWithDimensions(5, 5)
+        createDummyDefinitionWithDimensions(10, 10)
+        createDummyDefinitionWithDimensions(15, 15)
     }
 
     @Test
     fun testInvalidDimensionsThrowExceptions() {
-        assertThat({ PuzzleDefinition(0, 1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(1, 0) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(0, 0) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(-1, 1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(-1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(-5, -5) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(-10, -10) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleDefinition(-15, -15) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(0, 1) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(1, 0) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(0, 0) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(1, -1) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(-1, 1) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(-1, -1) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(-5, -5) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(-10, -10) }, throws<IllegalArgumentException>())
+        assertThat({ createDummyDefinitionWithDimensions(-15, -15) }, throws<IllegalArgumentException>())
+    }
+
+    @Test
+    fun testValidHintsDoNotThrowExceptions() {
+        PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1)))
+        PuzzleDefinition(2, 2, listOf(listOf(2), listOf(1)), listOf(listOf(1), listOf(2)))
+        PuzzleDefinition(
+                5,
+                5,
+                listOf(
+                        listOf(5),
+                        listOf(3),
+                        listOf(3, 1),
+                        listOf(4),
+                        listOf(1)
+                ),
+                listOf(
+                        listOf(1, 1),
+                        listOf(4),
+                        listOf(4),
+                        listOf(2, 1),
+                        listOf(1, 3)
+                )
+        )
     }
 }
+
+private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
+        PuzzleDefinition(rows, columns, emptyList(), emptyList())

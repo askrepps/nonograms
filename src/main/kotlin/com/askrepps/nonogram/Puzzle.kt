@@ -30,7 +30,12 @@ package com.askrepps.nonogram
  * @property rows the number of rows (must be positive)
  * @property columns the number of columns (must be positive)
  */
-data class PuzzleDefinition(val rows: Int, val columns: Int) {
+data class PuzzleDefinition(
+    val rows: Int,
+    val columns: Int,
+    val rowHints: List<List<Int>>,
+    val columnHints: List<List<Int>>
+) {
     init {
         require(rows > 0 && columns > 0) { "Puzzle must have positive dimensions" }
     }
