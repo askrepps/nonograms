@@ -78,7 +78,7 @@ class PuzzleDefinitionTest {
     }
 
     @Test
-    fun testWrongHintDimensionsThrowsException() {
+    fun testInvalidHintDimensionsThrowsException() {
         assertThat(
                 { PuzzleDefinition(1, 1, emptyList(), emptyList()) },
                 throws<IllegalArgumentException>()
