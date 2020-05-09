@@ -78,7 +78,38 @@ class PuzzleDefinitionTest {
 
     @Test
     fun testWrongHintDimensionsThrowsException() {
-        assertThat({ PuzzleDefinition(1, 1, emptyList(), emptyList()) }, throws<IllegalArgumentException>())
+        assertThat(
+                { PuzzleDefinition(1, 1, emptyList(), emptyList()) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(listOf(1)), emptyList()) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(listOf(1))) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(emptyList())) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(emptyList()), listOf(emptyList())) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1))) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1), listOf(1))) },
+                throws<IllegalArgumentException>()
+        )
+        assertThat(
+                { PuzzleDefinition(1, 1, listOf(listOf(1), listOf(1)), listOf(listOf(1), listOf(1))) },
+                throws<IllegalArgumentException>()
+        )
     }
 }
 
