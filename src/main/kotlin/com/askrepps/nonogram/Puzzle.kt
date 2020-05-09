@@ -24,6 +24,8 @@
 
 package com.askrepps.nonogram
 
+import com.askrepps.nonogram.internal.allNonnegative
+
 /**
  * A nonogram puzzle definition (not including cell contents).
  *
@@ -46,7 +48,7 @@ data class PuzzleDefinition(
         require(rowHints.all { it.isNotEmpty() } && columnHints.all { it.isNotEmpty() }) {
             "Puzzle must have hint values for every row and column"
         }
-        require(rowHints.all { it.all { x -> x >= 0 } } && columnHints.all { it.all { x -> x >= 0 } }) {
+        require(rowHints.allNonnegative() && columnHints.allNonnegative()) {
             "Puzzle must have non-negative hint values"
         }
         require(rowHints.all { it.size == 1 || !it.contains(0) } &&
