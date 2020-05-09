@@ -29,3 +29,22 @@ internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }
 
 /** Check that if a [Collection] contains zero it is the only element. */
 internal val Collection<Int>.anyZeroStandsAlone get() = size == 1 || !contains(0)
+
+/**
+ * Get the total length required to fit a [List] of nonogram hints in a row or column (including spaces between hints).
+ *
+ * This property assumes that hint values are valid (all non-negative, zero stands alone, etc.).
+ */
+internal val List<Int>.totalHintLength get() = sum() + size - 1
+
+/**
+ * Check that the [List] of nonogram hints will fit in a row of column with the given [length].
+ *
+ * This function assumes that hint values are valid (all non-negative, zero stands alone, etc.).
+ *
+ * @throws IllegalArgumentException if [length] is negative
+ */
+internal fun List<Int>.hintsFitWithin(length: Int): Boolean {
+    require(length >= 0) { "length cannot be negative" }
+    return totalHintLength <= length
+}

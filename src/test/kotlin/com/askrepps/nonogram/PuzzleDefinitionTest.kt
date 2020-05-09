@@ -168,11 +168,11 @@ class PuzzleDefinitionTest {
             throws<IllegalArgumentException>()
         )
         assertThat(
-            { PuzzleDefinition(2, 1, listOf(listOf(2), listOf(0)), listOf(listOf(2))) },
+            { PuzzleDefinition(3, 2, listOf(listOf(3), listOf(0), listOf(0)), listOf(listOf(2), listOf(1))) },
             throws<IllegalArgumentException>()
         )
         assertThat(
-            { PuzzleDefinition(1, 2, listOf(listOf(2)), listOf(listOf(0), listOf(2))) },
+            { PuzzleDefinition(2, 3, listOf(listOf(2), listOf(1)), listOf(listOf(3), listOf(0), listOf(0))) },
             throws<IllegalArgumentException>()
         )
     }
