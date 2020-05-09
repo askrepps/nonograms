@@ -46,7 +46,7 @@ data class PuzzleDefinition(
         require(rowHints.all { it.isNotEmpty() } && columnHints.all { it.isNotEmpty() }) {
             "Puzzle must have hint values for every row and column"
         }
-        require(rowHints.all { it.min() ?: 0 >= 0 } && columnHints.all { it.min() ?: 0 >= 0 }) {
+        require(rowHints.all { it.all { x -> x >= 0 } } && columnHints.all { it.all { x -> x >= 0 } }) {
             "Puzzle must have non-negative hint values"
         }
         require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {
