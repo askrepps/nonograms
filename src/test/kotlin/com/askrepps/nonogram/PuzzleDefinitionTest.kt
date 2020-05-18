@@ -24,45 +24,47 @@
 
 package com.askrepps.nonogram
 
+import com.askrepps.nonogram.internal.createEmptyPuzzleDefinitionWithDimensions
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.throws
 import org.junit.Test
-import java.lang.Integer.max
 
 /**
  * Tests for [PuzzleDefinition].
  */
 class PuzzleDefinitionTest {
     @Test
+    fun testPuzzleDimensions() {
+        val puzzle = createEmptyPuzzleDefinitionWithDimensions(3, 4)
+        assertThat(puzzle.rows, equalTo(3))
+        assertThat(puzzle.columns, equalTo(4))
+        assertThat(puzzle.rowIndices, equalTo(0 until 3))
+        assertThat(puzzle.columnIndices, equalTo(0 until 4))
+    }
+
+    @Test
     fun testValidDimensionsDoNotThrowExceptions() {
-        createDummyDefinitionWithDimensions(1, 1)
-        createDummyDefinitionWithDimensions(1, 5)
-        createDummyDefinitionWithDimensions(5, 1)
-        createDummyDefinitionWithDimensions(5, 5)
-        createDummyDefinitionWithDimensions(10, 10)
-        createDummyDefinitionWithDimensions(15, 15)
+        createEmptyPuzzleDefinitionWithDimensions(1, 1)
+        createEmptyPuzzleDefinitionWithDimensions(1, 5)
+        createEmptyPuzzleDefinitionWithDimensions(5, 1)
+        createEmptyPuzzleDefinitionWithDimensions(5, 5)
+        createEmptyPuzzleDefinitionWithDimensions(10, 10)
+        createEmptyPuzzleDefinitionWithDimensions(15, 15)
     }
 
     @Test
     fun testInvalidDimensionsThrowExceptions() {
-        assertThat({ createDummyDefinitionWithDimensions(0, 1) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(1, 0) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(0, 0) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(-1, 1) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(-1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(-5, -5) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(-10, -10) }, throws<IllegalArgumentException>())
-        assertThat({ createDummyDefinitionWithDimensions(-15, -15) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(0, 1) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(1, 0) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(0, 0) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(1, -1) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(-1, 1) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(-1, -1) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(-5, -5) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(-10, -10) }, throws<IllegalArgumentException>())
+        assertThat({ createEmptyPuzzleDefinitionWithDimensions(-15, -15) }, throws<IllegalArgumentException>())
     }
-
-    private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
-        PuzzleDefinition(
-            rows,
-            columns,
-            List(max(rows, 0)) { listOf(0) },
-            List(max(columns, 0)) { listOf(0) }
-        )
 
     @Test
     fun testValidHintsDoNotThrowExceptions() {

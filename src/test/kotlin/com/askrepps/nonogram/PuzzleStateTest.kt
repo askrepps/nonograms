@@ -38,6 +38,8 @@ class PuzzleStateTest {
         val state = PuzzleState(3, 4)
         assertThat(state.rows, equalTo(3))
         assertThat(state.columns, equalTo(4))
+        assertThat(state.rowIndices, equalTo(0 until 3))
+        assertThat(state.columnIndices, equalTo(0 until 4))
     }
 
     @Test
@@ -73,8 +75,8 @@ class PuzzleStateTest {
     fun testCellsInitializedToOpen() {
         val state = PuzzleState(10, 15)
         val grid = state.cellGrid
-        for (row in 0 until 10) {
-            for (col in 0 until 15) {
+        for (row in state.rowIndices) {
+            for (col in state.columnIndices) {
                 assertThat(grid[row][col], equalTo(CellContents.OPEN))
                 assertThat(state.getCell(row, col), equalTo(CellContents.OPEN))
             }
@@ -99,8 +101,8 @@ class PuzzleStateTest {
         state.markCell(3, 4, CellContents.X)
 
         val grid = state.cellGrid
-        for (row in 0 until 10) {
-            for (col in 0 until 15) {
+        for (row in state.rowIndices) {
+            for (col in state.columnIndices) {
                 val expectedContents = when {
                     row == 1 && col == 2 -> CellContents.FILLED
                     row == 3 && col == 4 -> CellContents.X

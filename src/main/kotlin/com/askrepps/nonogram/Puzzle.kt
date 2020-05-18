@@ -30,21 +30,41 @@ import com.askrepps.nonogram.internal.getCellIndex
 import com.askrepps.nonogram.internal.hintsFitWithin
 
 /**
+ * Common functionality for classes that contain the definition of a 2-D grid with [rows] and [columns].
+ *
+ * @throws IllegalArgumentException if the grid dimensions are invalid.
+ */
+open class GridDefinition(val rows: Int, val columns: Int) {
+    init {
+        require(rows > 0 && columns > 0) {
+            "Grid must have positive dimensions"
+        }
+    }
+
+    /**
+     * Get a range of row indices to iterate over.
+     */
+    val rowIndices: IntRange get() = 0 until rows
+
+    /**
+     * Get a range of column indices to iterate over.
+     */
+    val columnIndices: IntRange get() = 0 until columns
+}
+
+/**
  * A nonogram puzzle definition (not including cell contents).
  *
  * @throws IllegalArgumentException if the puzzle definition is invalid.
  */
-data class PuzzleDefinition(
-    val rows: Int,
-    val columns: Int,
+class PuzzleDefinition(
+    rows: Int,
+    columns: Int,
     val rowHints: List<List<Int>>,
     val columnHints: List<List<Int>>
-) {
+) : GridDefinition(rows, columns) {
     init {
         // validate puzzle definition
-        require(rows > 0 && columns > 0) {
-            "Puzzle must have positive dimensions"
-        }
         require(rowHints.size == rows && columnHints.size == columns) {
             "Puzzle must have hints for every row and column"
         }
@@ -76,14 +96,8 @@ enum class CellContents { OPEN, FILLED, X }
  *
  * @throws IllegalArgumentException if the puzzle dimensions are invalid.
  */
-open class PuzzleState(val rows: Int, val columns: Int) {
+open class PuzzleState(rows: Int, columns: Int) : GridDefinition(rows, columns) {
     internal val cells = MutableList(rows * columns) { CellContents.OPEN }
-
-    init {
-        require(rows > 0 && columns > 0) {
-            "Puzzle must have positive dimensions"
-        }
-    }
 
     /**
      * The current contents of all puzzle cells as a 2-D grid stored in row-major order.
@@ -127,11 +141,11 @@ open class PuzzleState(val rows: Int, val columns: Int) {
     }
 
     private fun validateRow(row: Int) {
-        require(row in 0 until rows) { "Invalid row index ($row), must be from 0 - ${rows - 1}" }
+        require(row in rowIndices) { "Invalid row index ($row), must be from $rowIndices" }
     }
 
     private fun validateColumn(col: Int) {
-        require(col in 0 until columns) { "Invalid column index ($col), must be from 0 - ${columns - 1}" }
+        require(col in columnIndices) { "Invalid column index ($col), must be from $columnIndices" }
     }
 
     protected fun getCellIndex(row: Int, col: Int) = getCellIndex(row, col, columns)
