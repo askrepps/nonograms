@@ -24,6 +24,7 @@
 
 package com.askrepps.nonogram.internal
 
+import com.askrepps.nonogram.CellContents
 import com.askrepps.nonogram.PuzzleDefinition
 import kotlin.math.max
 
@@ -42,3 +43,8 @@ internal fun createFullPuzzleDefinitionWithDimensions(rows: Int, columns: Int) =
         List(max(rows, 0)) { listOf(columns) },
         List(max(columns, 0)) { listOf(rows) }
     )
+
+internal val MutableList<CellContents>.markCell: (Int, CellContents) -> Unit
+    get() = { index, contents ->
+        set(index, contents)
+    }

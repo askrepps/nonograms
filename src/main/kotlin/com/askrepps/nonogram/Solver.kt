@@ -60,25 +60,25 @@ internal fun MutablePuzzleState.applyHints(
     lineIndex: Int,
     rowOrColumn: RowOrColumn
 ): Boolean {
-    val lineData: List<CellContents>
-    val hints: List<Int>
-    when (rowOrColumn) {
+    return when (rowOrColumn) {
         RowOrColumn.ROW -> {
-            require(lineIndex in puzzle.rowIndices) {
-                "Invalid row index ($lineIndex), must be from ${puzzle.rowIndices}"
+            applyHintsToLine(getRow(lineIndex), puzzle.rowHints[lineIndex]) { col, contents ->
+                markCell(lineIndex, col, contents)
             }
-            lineData = getRow(lineIndex)
-            hints = puzzle.rowHints[lineIndex]
         }
         RowOrColumn.COLUMN -> {
-            require(lineIndex in puzzle.columnIndices) {
-                "Invalid column index ($lineIndex), must be from ${puzzle.columnIndices}"
+            applyHintsToLine(getColumn(lineIndex), puzzle.columnHints[lineIndex]) { row, contents ->
+                markCell(row, lineIndex, contents)
             }
-            lineData = getColumn(lineIndex)
-            hints = puzzle.columnHints[lineIndex]
         }
     }
+}
 
+internal fun applyHintsToLine(
+    lineData: List<CellContents>,
+    hints: List<Int>,
+    markCell: (Int, CellContents) -> Unit
+): Boolean {
     // check if there is anything to do
     if (lineData.all { it != CellContents.OPEN }) {
         return false
@@ -86,35 +86,26 @@ internal fun MutablePuzzleState.applyHints(
 
     // lines with 0 are completely marked with Xs
     if (hints.first() == 0) {
-        markLine(lineIndex, lineData.size, rowOrColumn, CellContents.X)
+        markLine(lineData.size, CellContents.X, markCell)
         return true
     }
 
     // lines where the hint is equal to the size are completely filled in
     if (hints.first() == lineData.size) {
-        markLine(lineIndex, lineData.size, rowOrColumn, CellContents.FILLED)
+        markLine(lineData.size, CellContents.FILLED, markCell)
+        return true
     }
 
     return false
 }
 
-private fun MutablePuzzleState.markLine(
-    lineIndex: Int,
+private fun markLine(
     lineSize: Int,
-    rowOrColumn: RowOrColumn,
-    contents: CellContents
+    contents: CellContents,
+    markCell: (Int, CellContents) -> Unit
 ) {
-    when (rowOrColumn) {
-        RowOrColumn.ROW -> {
-            for (col in 0 until lineSize) {
-                markCell(lineIndex, col, contents)
-            }
-        }
-        RowOrColumn.COLUMN -> {
-            for (row in 0 until lineSize) {
-                markCell(row, lineIndex, contents)
-            }
-        }
+    for (i in 0 until lineSize) {
+        markCell(i, contents)
     }
 }
 
