@@ -26,6 +26,7 @@ package com.askrepps.nonogram
 
 import com.askrepps.nonogram.internal.allNonnegative
 import com.askrepps.nonogram.internal.anyZeroStandsAlone
+import com.askrepps.nonogram.internal.getCellIndex
 import com.askrepps.nonogram.internal.hintsFitWithin
 
 /**
@@ -62,5 +63,91 @@ data class PuzzleDefinition(
         require(rowHints.all { it.hintsFitWithin(columns) } && columnHints.all { it.hintsFitWithin(rows) }) {
             "Puzzle must have all hints fit in their corresponding row or column"
         }
+    }
+}
+
+/**
+ * Possible contents of a puzzle grid cell.
+ */
+enum class CellContents { OPEN, FILLED, X }
+
+/**
+ * The state of a nonogram puzzle grid.
+ *
+ * @throws IllegalArgumentException if the puzzle dimensions are invalid.
+ */
+open class PuzzleState(val rows: Int, val columns: Int) {
+    internal val cells = MutableList(rows * columns) { CellContents.OPEN }
+
+    init {
+        require(rows > 0 && columns > 0) {
+            "Puzzle must have positive dimensions"
+        }
+    }
+
+    /**
+     * The current contents of all puzzle cells as a 2-D grid stored in row-major order.
+     */
+    val cellGrid: List<List<CellContents>>
+        get() = List(rows) { row -> List(columns) { col -> getCell(row, col) } }
+
+    /**
+     * Get the contents of a cell located at ([row], [col]).
+     *
+     * @throws IllegalArgumentException if [row] or [col] are invalid.
+     */
+    fun getCell(row: Int, col: Int): CellContents {
+        validateGridCoordinates(row, col)
+        return cells[getCellIndex(row, col, columns)]
+    }
+
+    /**
+     * Get the contents of the entire row of the puzzle with index [row].
+     *
+     * @throws IllegalArgumentException if [row] is invalid.
+     */
+    fun getRow(row: Int): List<CellContents> {
+        validateRow(row)
+        return List(columns) { col -> getCell(row, col) }
+    }
+
+    /**
+     * Get the contents of the entire column of the puzzle with index [col].
+     *
+     * @throws IllegalArgumentException if [col] is invalid.
+     */
+    fun getColumn(col: Int): List<CellContents> {
+        validateColumn(col)
+        return List(rows) { row -> getCell(row, col) }
+    }
+
+    protected fun validateGridCoordinates(row: Int, col: Int) {
+        validateRow(row)
+        validateColumn(col)
+    }
+
+    private fun validateRow(row: Int) {
+        require(row in 0 until rows) { "Invalid row index ($row), must be from 0 - ${rows - 1}" }
+    }
+
+    private fun validateColumn(col: Int) {
+        require(col in 0 until columns) { "Invalid column index ($col), must be from 0 - ${columns - 1}" }
+    }
+
+    protected fun getCellIndex(row: Int, col: Int) = getCellIndex(row, col, columns)
+}
+
+/**
+ * The state of a nonogram puzzle grid that can be edited (i.e., by a solver algorithm).
+ */
+class MutablePuzzleState(rows: Int, columns: Int) : PuzzleState(rows, columns) {
+    /**
+     * Mark the cell located at ([row], [col]) with new [contents].
+     *
+     * @throws IllegalArgumentException if the grid coordinates are invalid.
+     */
+    fun markCell(row: Int, col: Int, contents: CellContents) {
+        validateGridCoordinates(row, col)
+        cells[getCellIndex(row, col)] = contents
     }
 }

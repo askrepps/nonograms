@@ -48,3 +48,10 @@ internal fun List<Int>.hintsFitWithin(length: Int): Boolean {
     require(length >= 0) { "length cannot be negative" }
     return totalHintLength <= length
 }
+
+/**
+ * Get the index of the cell located at ([row], [col]) in a row-major grid with rows of size [rowSize].
+ *
+ * This function assumes that [row], [col], and [rowSize] are valid and self-consistent.
+ */
+internal fun getCellIndex(row: Int, col: Int, rowSize: Int) = row * rowSize + col
