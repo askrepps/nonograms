@@ -29,6 +29,9 @@ import com.natpryce.hamkrest.throws
 import org.junit.Test
 import java.lang.Integer.max
 
+/**
+ * Tests for [PuzzleDefinition].
+ */
 class PuzzleDefinitionTest {
     @Test
     fun testValidDimensionsDoNotThrowExceptions() {
@@ -52,6 +55,14 @@ class PuzzleDefinitionTest {
         assertThat({ createDummyDefinitionWithDimensions(-10, -10) }, throws<IllegalArgumentException>())
         assertThat({ createDummyDefinitionWithDimensions(-15, -15) }, throws<IllegalArgumentException>())
     }
+
+    private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
+        PuzzleDefinition(
+            rows,
+            columns,
+            List(max(rows, 0)) { listOf(0) },
+            List(max(columns, 0)) { listOf(0) }
+        )
 
     @Test
     fun testValidHintsDoNotThrowExceptions() {
@@ -177,11 +188,3 @@ class PuzzleDefinitionTest {
         )
     }
 }
-
-private fun createDummyDefinitionWithDimensions(rows: Int, columns: Int) =
-    PuzzleDefinition(
-        rows,
-        columns,
-        List(max(rows, 0)) { listOf(0) },
-        List(max(columns, 0)) { listOf(0) }
-    )

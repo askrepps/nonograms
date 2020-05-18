@@ -24,10 +24,14 @@
 
 package com.askrepps.nonogram.internal
 
-/** Check that all [Int] elements in an [Iterable] are non-negative. */
+/**
+ * Check that all [Int] elements in an [Iterable] are non-negative.
+ */
 internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }
 
-/** Check that if a [Collection] contains zero it is the only element. */
+/**
+ * Check that if a [Collection] contains zero it is the only element.
+ */
 internal val Collection<Int>.anyZeroStandsAlone get() = size == 1 || !contains(0)
 
 /**
