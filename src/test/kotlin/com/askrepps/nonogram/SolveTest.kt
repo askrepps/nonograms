@@ -24,6 +24,8 @@
 
 package com.askrepps.nonogram
 
+import com.askrepps.nonogram.internal.FILLED
+import com.askrepps.nonogram.internal.X
 import com.askrepps.nonogram.internal.createEmptyPuzzleDefinitionWithDimensions
 import com.askrepps.nonogram.internal.createFullPuzzleDefinitionWithDimensions
 import com.natpryce.hamkrest.assertion.assertThat
@@ -50,7 +52,7 @@ class SolveTest {
         val solution = createEmptyPuzzleDefinitionWithDimensions(2, 3).solve()
         for (row in solution.rowIndices) {
             for (col in solution.columnIndices) {
-                assertThat(solution.getCell(row, col), equalTo(CellContents.X))
+                assertThat(solution.getCell(row, col), equalTo(X))
             }
         }
     }
@@ -60,7 +62,7 @@ class SolveTest {
         val solution = createFullPuzzleDefinitionWithDimensions(3, 2).solve()
         for (row in solution.rowIndices) {
             for (col in solution.columnIndices) {
-                assertThat(solution.getCell(row, col), equalTo(CellContents.FILLED))
+                assertThat(solution.getCell(row, col), equalTo(FILLED))
             }
         }
     }

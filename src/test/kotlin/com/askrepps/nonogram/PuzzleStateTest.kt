@@ -24,6 +24,9 @@
 
 package com.askrepps.nonogram
 
+import com.askrepps.nonogram.internal.FILLED
+import com.askrepps.nonogram.internal.OPEN
+import com.askrepps.nonogram.internal.X
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.throws
@@ -77,8 +80,8 @@ class PuzzleStateTest {
         val grid = state.cellGrid
         for (row in state.rowIndices) {
             for (col in state.columnIndices) {
-                assertThat(grid[row][col], equalTo(CellContents.OPEN))
-                assertThat(state.getCell(row, col), equalTo(CellContents.OPEN))
+                assertThat(grid[row][col], equalTo(OPEN))
+                assertThat(state.getCell(row, col), equalTo(OPEN))
             }
         }
     }
@@ -97,16 +100,16 @@ class PuzzleStateTest {
     @Test
     fun testMarkCell() {
         val state = MutablePuzzleState(10, 15)
-        state.markCell(1, 2, CellContents.FILLED)
-        state.markCell(3, 4, CellContents.X)
+        state.markCell(1, 2, FILLED)
+        state.markCell(3, 4, X)
 
         val grid = state.cellGrid
         for (row in state.rowIndices) {
             for (col in state.columnIndices) {
                 val expectedContents = when {
-                    row == 1 && col == 2 -> CellContents.FILLED
-                    row == 3 && col == 4 -> CellContents.X
-                    else -> CellContents.OPEN
+                    row == 1 && col == 2 -> FILLED
+                    row == 3 && col == 4 -> X
+                    else -> OPEN
                 }
                 assertThat(grid[row][col], equalTo(expectedContents))
                 assertThat(state.getCell(row, col), equalTo(expectedContents))
@@ -117,12 +120,12 @@ class PuzzleStateTest {
     @Test
     fun testInvalidMarkCellCoordinatesThrowsException() {
         val state = MutablePuzzleState(10, 15)
-        assertThat({ state.markCell(-1, 0, CellContents.OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(0, -1, CellContents.OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(-1, -1, CellContents.OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(10, 0, CellContents.OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(0, 15, CellContents.OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(10, 15, CellContents.OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(-1, 0, OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(0, -1, OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(-1, -1, OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(10, 0, OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(0, 15, OPEN) }, throws<IllegalArgumentException>())
+        assertThat({ state.markCell(10, 15, OPEN) }, throws<IllegalArgumentException>())
     }
 
     @Test
@@ -135,13 +138,13 @@ class PuzzleStateTest {
     @Test
     fun testGetRow() {
         val state = MutablePuzzleState(2, 3)
-        state.markCell(0, 0, CellContents.FILLED)
-        state.markCell(0, 1, CellContents.X)
-        state.markCell(1, 1, CellContents.X)
-        state.markCell(1, 2, CellContents.FILLED)
+        state.markCell(0, 0, FILLED)
+        state.markCell(0, 1, X)
+        state.markCell(1, 1, X)
+        state.markCell(1, 2, FILLED)
 
-        assertThat(state.getRow(0), equalTo(listOf(CellContents.FILLED, CellContents.X, CellContents.OPEN)))
-        assertThat(state.getRow(1), equalTo(listOf(CellContents.OPEN, CellContents.X, CellContents.FILLED)))
+        assertThat(state.getRow(0), equalTo(listOf(FILLED, X, OPEN)))
+        assertThat(state.getRow(1), equalTo(listOf(OPEN, X, FILLED)))
     }
 
     @Test
@@ -163,14 +166,14 @@ class PuzzleStateTest {
     @Test
     fun testGetColumn() {
         val state = MutablePuzzleState(2, 3)
-        state.markCell(0, 0, CellContents.FILLED)
-        state.markCell(0, 1, CellContents.X)
-        state.markCell(1, 1, CellContents.X)
-        state.markCell(1, 2, CellContents.FILLED)
+        state.markCell(0, 0, FILLED)
+        state.markCell(0, 1, X)
+        state.markCell(1, 1, X)
+        state.markCell(1, 2, FILLED)
 
-        assertThat(state.getColumn(0), equalTo(listOf(CellContents.FILLED, CellContents.OPEN)))
-        assertThat(state.getColumn(1), equalTo(listOf(CellContents.X, CellContents.X)))
-        assertThat(state.getColumn(2), equalTo(listOf(CellContents.OPEN, CellContents.FILLED)))
+        assertThat(state.getColumn(0), equalTo(listOf(FILLED, OPEN)))
+        assertThat(state.getColumn(1), equalTo(listOf(X, X)))
+        assertThat(state.getColumn(2), equalTo(listOf(OPEN, FILLED)))
     }
 
     @Test
