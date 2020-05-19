@@ -24,6 +24,7 @@
 
 package com.askrepps.nonogram
 
+import com.askrepps.nonogram.internal.totalHintLength
 import java.lang.RuntimeException
 
 /**
@@ -84,28 +85,57 @@ internal fun applyHintsToLine(
         return false
     }
 
-    // lines with 0 are completely marked with Xs
-    if (hints.first() == 0) {
-        markLine(lineData.size, CellContents.X, markCell)
+    // check for lines where there is a guaranteed overlap
+    val slack = lineData.size - hints.totalHintLength
+    if (hints.max() ?: -1 > slack && fillOverlappingCells(lineData, hints, slack,  markCell)) {
         return true
     }
 
-    // lines where the hint is equal to the size are completely filled in
-    if (hints.first() == lineData.size) {
-        markLine(lineData.size, CellContents.FILLED, markCell)
+    // check for completed lines
+    if (lineData.count { it == CellContents.FILLED } == hints.sum()) {
+        markOpenCellsInLine(lineData, CellContents.X, markCell)
         return true
     }
 
     return false
 }
 
-private fun markLine(
-    lineSize: Int,
+private fun fillOverlappingCells(
+    lineData: List<CellContents>,
+    hints: List<Int>,
+    slack: Int,
+    markCell: (Int, CellContents) -> Unit
+): Boolean {
+    var index = 0
+    var changes = false
+    for (hint in hints) {
+        for (j in 0 until hint) {
+            if (j >= slack) {
+                if (lineData[index] != CellContents.FILLED) {
+                    markCell(index, CellContents.FILLED)
+                    changes = true
+                }
+            }
+            index++
+        }
+        if (slack == 0 && index < lineData.size && lineData[index] != CellContents.X) {
+            markCell(index, CellContents.X)
+            changes = true
+        }
+        index++
+    }
+    return changes
+}
+
+private fun markOpenCellsInLine(
+    lineData: List<CellContents>,
     contents: CellContents,
     markCell: (Int, CellContents) -> Unit
 ) {
-    for (i in 0 until lineSize) {
-        markCell(i, contents)
+    for (i in lineData.indices) {
+        if (lineData[i] == CellContents.OPEN) {
+            markCell(i, contents)
+        }
     }
 }
 

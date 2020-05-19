@@ -48,3 +48,7 @@ internal val MutableList<CellContents>.markCell: (Int, CellContents) -> Unit
     get() = { index, contents ->
         set(index, contents)
     }
+
+internal val OPEN = CellContents.OPEN
+internal val FILLED = CellContents.FILLED
+internal val X = CellContents.X
