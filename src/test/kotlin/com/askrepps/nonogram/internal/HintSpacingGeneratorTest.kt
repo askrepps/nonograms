@@ -29,7 +29,11 @@ import com.natpryce.hamkrest.equalTo
 import org.junit.Test
 
 /**
- * Tests for [HintSpacingIterator]
+ * Tests for [HintSpacingIterator].
+ *
+ * Note: The code under test assumes that hint values are valid w.r.t. the
+ *       validation performed during [PuzzleDefinition] initialization, so
+ *       only valid hints will be tested.
  */
 class HintSpacingGeneratorTest {
     @Test
@@ -39,7 +43,7 @@ class HintSpacingGeneratorTest {
         val expectedSequence = listOf(
             listOf(0)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -49,7 +53,7 @@ class HintSpacingGeneratorTest {
         val expectedSequence = listOf(
             listOf(0)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -60,7 +64,7 @@ class HintSpacingGeneratorTest {
             listOf(1),
             listOf(0)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -74,7 +78,7 @@ class HintSpacingGeneratorTest {
             listOf(1),
             listOf(0)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -84,7 +88,7 @@ class HintSpacingGeneratorTest {
         val expectedSequence = listOf(
             listOf(0, 1)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -94,7 +98,7 @@ class HintSpacingGeneratorTest {
         val expectedSequence = listOf(
             listOf(0, 1, 1, 1)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -107,12 +111,31 @@ class HintSpacingGeneratorTest {
             listOf(3, 3, 1),
             listOf(2, 4, 1),
             listOf(1, 5, 1),
-            listOf(1, 4, 2),
-            listOf(1, 3, 3),
-            listOf(1, 2, 4),
-            listOf(1, 1, 5)
+            listOf(0, 6, 1),
+            listOf(0, 5, 2),
+            listOf(0, 4, 3),
+            listOf(0, 3, 4),
+            listOf(0, 2, 5),
+            listOf(0, 1, 6),
+            listOf(0, 1, 5),
+            listOf(0, 1, 4),
+            listOf(0, 1, 3),
+            listOf(0, 1, 2),
+            listOf(0, 1, 1)
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
+    }
+
+    @Test
+    fun testGenerateSpaceSequenceMultiSmallerHint() {
+        val lineSize = 5
+        val hints = listOf(1, 2)
+        val expectedSequence = listOf(
+            listOf(1, 1),
+            listOf(0, 2),
+            listOf(0, 1)
+        )
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
     @Test
@@ -123,11 +146,21 @@ class HintSpacingGeneratorTest {
             listOf(3, 1, 1),
             listOf(2, 2, 1),
             listOf(1, 3, 1),
-            listOf(1, 2, 2),
-            listOf(1, 1, 3)
+            listOf(0, 4, 1),
+            listOf(0, 3, 2),
+            listOf(0, 2, 3),
+            listOf(0, 1, 4),
+            listOf(0, 1, 3),
+            listOf(0, 1, 2),
+            listOf(0, 1, 1)
+
         )
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        runSequenceTest(hints, lineSize, expectedSequence)
     }
 
-    private fun generateFullSequence(hints: List<Int>, lineSize: Int) = HintSpacingGenerator(hints, lineSize).toList()
+    private fun generateFullSequence(hints: List<Int>, lineSize: Int) =
+        HintSpacingGenerator(hints, lineSize).toList()
+
+    private fun runSequenceTest(hints: List<Int>, lineSize: Int, expectedSequence: List<List<Int>>) =
+        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
 }

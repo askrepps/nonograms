@@ -37,17 +37,12 @@ internal class HintSpacingGenerator(private val hints: List<Int>, private val li
  *
  * This code assumes the hints are valid and consistent w.r.t. the rules checked during puzzle initialization.
  */
-internal class HintSpacingIterator(private val hints: List<Int>, lineSize: Int) : Iterator<List<Int>> {
-    private val maxHint = hints.max() ?: 0
-    private val slack =  if (maxHint > 0) lineSize - hints.totalHintLength else 0
+internal class HintSpacingIterator(private val hints: List<Int>, private val lineSize: Int) : Iterator<List<Int>> {
     private var currentSpacing = mutableListOf<Int>()
 
     override fun hasNext() =
-        when (currentSpacing.size) {
-            0 -> true
-            1 -> currentSpacing.first() > 0
-            else -> currentSpacing.last() < slack
-        }
+        // done when all cells are shifted to the left as far as possible
+        currentSpacing.isEmpty() || currentSpacing.first() > 0 || currentSpacing.max()!! > 1
 
     override fun next(): List<Int> {
         if (currentSpacing.isEmpty()) {
@@ -59,6 +54,14 @@ internal class HintSpacingIterator(private val hints: List<Int>, lineSize: Int) 
     }
 
     private fun initializeSpaces() {
+        // start with cells shifted as far to the right as possible
+        val maxHint = hints.max() ?: 0
+        val slack =
+            if (maxHint > 0) {
+                lineSize - hints.totalHintLength
+            } else {
+                0
+            }
         currentSpacing.add(slack)
         for (i in 1 until hints.size) {
             currentSpacing.add(1)
@@ -66,19 +69,19 @@ internal class HintSpacingIterator(private val hints: List<Int>, lineSize: Int) 
     }
 
     private fun advanceSpaces() {
-        if (currentSpacing.size == 1) {
-            currentSpacing[0] -= 1
-        } else {
-            var advancing = true
-            var index = 0
-            while (index < currentSpacing.size - 1 && advancing) {
-                if (currentSpacing[index] == 1) {
-                    index++
-                } else {
-                    currentSpacing[index] -= 1
-                    currentSpacing[index + 1] += 1
-                    advancing = false
+        // shift first available group one cell to the left
+        var advancing = true
+        var index = 0
+        while (advancing && index < currentSpacing.size) {
+            val minSpacing = if (index == 0) 0 else 1
+            if (currentSpacing[index] == minSpacing) {
+                index++
+            } else {
+                currentSpacing[index]--
+                if (index < currentSpacing.size - 1) {
+                    currentSpacing[index + 1]++
                 }
+                advancing = false
             }
         }
     }

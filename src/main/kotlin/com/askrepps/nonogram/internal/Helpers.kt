@@ -25,6 +25,18 @@
 package com.askrepps.nonogram.internal
 
 /**
+ * Add the contents of one [IntArray] into the [other] in-place (i.e., [other] is modified).
+ */
+internal fun IntArray.addTo(other: IntArray) {
+    require(size == other.size) {
+        "Array dimensions must be equal"
+    }
+    for (i in indices) {
+        other[i] = other[i] + this[i]
+    }
+}
+
+/**
  * Check that all [Int] elements in an [Iterable] are non-negative.
  */
 internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }
