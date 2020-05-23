@@ -121,6 +121,51 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    @Test
+    fun testApplyShrinkingBorderSingleHintToEmptyStart() {
+        val line = mutableListOf(OPEN, OPEN, FILLED, OPEN)
+        val hints = listOf(2)
+        val expectedLine = listOf(X, OPEN, FILLED, OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderSingleHintAfterStartingX() {
+        val line = mutableListOf(X, OPEN, OPEN, FILLED, OPEN)
+        val hints = listOf(2)
+        val expectedLine = listOf(X, X, OPEN, FILLED, OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderSingleHintToEmptyEnd() {
+        val line = mutableListOf(OPEN, FILLED, OPEN, OPEN)
+        val hints = listOf(2)
+        val expectedLine = listOf(OPEN, FILLED, OPEN, X)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderSingleHintBeforeEndingX() {
+        val line = mutableListOf(OPEN, FILLED, OPEN, OPEN, X)
+        val hints = listOf(2)
+        val expectedLine = listOf(OPEN, FILLED, OPEN, X, X)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderSingleHintLargerContext() {
+        val line = mutableListOf(OPEN, OPEN, FILLED, FILLED, OPEN, OPEN, OPEN, OPEN)
+        val hints = listOf(3)
+        val expectedLine = listOf(X, OPEN, FILLED, FILLED, OPEN, X, X, X)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
         assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(true))
         assertThat(line, equalTo(expectedLine))

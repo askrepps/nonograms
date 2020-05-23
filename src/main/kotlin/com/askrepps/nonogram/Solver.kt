@@ -87,8 +87,18 @@ internal fun applyHintsToLine(
 
     // check for lines where there is a guaranteed overlap
     val slack = lineData.size - hints.totalHintLength
-    if (hints.max() ?: -1 > slack && fillOverlappingCells(lineData, hints, slack,  markCell)) {
+    val maxHint = hints.max() ?: -1
+    if (maxHint > slack && fillOverlappingCells(lineData, hints, slack, markCell)) {
         return true
+    }
+
+    // check special rules for single-hint case
+    if (hints.size == 1 && maxHint > 0) {
+        val onlyHint = hints.first()
+        // check for border cells that can be ruled out due to distance from filled in cells
+        if (fillSingleHintShrinkingBorderCells(lineData, onlyHint, markCell)) {
+            return true
+        }
     }
 
     // check for completed lines
@@ -123,6 +133,27 @@ private fun fillOverlappingCells(
             changes = true
         }
         index++
+    }
+    return changes
+}
+
+private fun fillSingleHintShrinkingBorderCells(
+    lineData: List<CellContents>,
+    hint: Int,
+    markCell: (Int, CellContents) -> Unit
+): Boolean {
+    var changes = false
+    val firstFilledIndex = lineData.indexOfFirst { it == CellContents.FILLED }
+    val lastFilledIndex = lineData.indexOfLast { it == CellContents.FILLED }
+    val slack = hint - (lastFilledIndex - firstFilledIndex + 1)
+    if (slack > 0 && firstFilledIndex in lineData.indices && lastFilledIndex in lineData.indices) {
+        val slackSpace = (firstFilledIndex - slack)..(lastFilledIndex + slack)
+        for (index in lineData.indices) {
+            if (index !in slackSpace && lineData[index] != CellContents.X) {
+                markCell(index, CellContents.X)
+                changes = true
+            }
+        }
     }
     return changes
 }
