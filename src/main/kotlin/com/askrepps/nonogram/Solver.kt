@@ -103,7 +103,7 @@ internal fun applyHintsToLine(
 
     // check for completed lines
     if (lineData.count { it == CellContents.FILLED } == hints.sum()) {
-        markOpenCellsInLine(lineData, CellContents.X, markCell)
+        ruleOutOpenCellsInLine(lineData, markCell)
         return true
     }
 
@@ -158,14 +158,13 @@ private fun fillSingleHintShrinkingBorderCells(
     return changes
 }
 
-private fun markOpenCellsInLine(
+private fun ruleOutOpenCellsInLine(
     lineData: List<CellContents>,
-    contents: CellContents,
     markCell: (Int, CellContents) -> Unit
 ) {
     for (i in lineData.indices) {
         if (lineData[i] == CellContents.OPEN) {
-            markCell(i, contents)
+            markCell(i, CellContents.X)
         }
     }
 }
