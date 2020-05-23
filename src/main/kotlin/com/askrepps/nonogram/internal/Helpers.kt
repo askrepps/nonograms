@@ -35,6 +35,31 @@ internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }
 internal val Collection<Int>.anyZeroStandsAlone get() = size == 1 || !contains(0)
 
 /**
+ * Check that all [Int] elements in a [List] are sorted in ascending order.
+ */
+internal fun List<Int>.isSortedAscending() = isSorted(ascending = true)
+
+/**
+ * Check that all [Int] elements in a [List] are sorted in descending order.
+ */
+internal fun List<Int>.isSortedDescending() = isSorted(ascending = false)
+
+private fun List<Int>.isSorted(ascending: Boolean): Boolean {
+    for (index in 1 until size) {
+        if (ascending) {
+            if (get(index) < get(index - 1)) {
+                return false
+            }
+        } else {
+            if (get(index) > get(index - 1)) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+/**
  * Get the total length required to fit a [List] of nonogram hints in a row or column (including spaces between hints).
  *
  * This property assumes that hint values are valid (all non-negative, zero stands alone, etc.).
