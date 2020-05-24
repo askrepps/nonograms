@@ -38,8 +38,8 @@ import org.junit.Test
 class HintSpacingGeneratorTest {
     @Test
     fun testGenerateNoSpaceSequenceEmptyHint() {
-        val lineSize = 5
         val hints = listOf(0)
+        val lineSize = 5
         val expectedSequence = listOf(
             listOf(0)
         )
@@ -48,8 +48,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateNoSpaceSequenceFullHint() {
-        val lineSize = 5
         val hints = listOf(5)
+        val lineSize = 5
         val expectedSequence = listOf(
             listOf(0)
         )
@@ -58,8 +58,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSingleSpaceSequenceSingleHint() {
-        val lineSize = 10
         val hints = listOf(9)
+        val lineSize = 10
         val expectedSequence = listOf(
             listOf(1),
             listOf(0)
@@ -69,8 +69,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceSingleHint() {
-        val lineSize = 10
         val hints = listOf(6)
+        val lineSize = 10
         val expectedSequence = listOf(
             listOf(4),
             listOf(3),
@@ -83,8 +83,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceExactTwoHint() {
-        val lineSize = 10
         val hints = listOf(3, 6)
+        val lineSize = 10
         val expectedSequence = listOf(
             listOf(0, 1)
         )
@@ -93,8 +93,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceExactFourHint() {
-        val lineSize = 10
         val hints = listOf(1, 2, 2, 2)
+        val lineSize = 10
         val expectedSequence = listOf(
             listOf(0, 1, 1, 1)
         )
@@ -103,8 +103,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceMultiOneHint() {
-        val lineSize = 10
         val hints = listOf(1, 1, 1)
+        val lineSize = 10
         val expectedSequence = listOf(
             listOf(5, 1, 1),
             listOf(4, 2, 1),
@@ -128,8 +128,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceMultiSmallerHint() {
-        val lineSize = 5
         val hints = listOf(1, 2)
+        val lineSize = 5
         val expectedSequence = listOf(
             listOf(1, 1),
             listOf(0, 2),
@@ -140,8 +140,8 @@ class HintSpacingGeneratorTest {
 
     @Test
     fun testGenerateSpaceSequenceMultiLargerHint() {
-        val lineSize = 15
         val hints = listOf(3, 1, 6)
+        val lineSize = 15
         val expectedSequence = listOf(
             listOf(3, 1, 1),
             listOf(2, 2, 1),
