@@ -101,4 +101,15 @@ class SolveTest {
         )
         assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_UNQIUE))))
     }
+
+    @Test
+    fun testImpossiblePuzzleHasNoSolution() {
+        val puzzle = PuzzleDefinition(
+            rows = 2,
+            columns = 2,
+            rowHints = listOf(listOf(0), listOf(2)),
+            columnHints = listOf(listOf(0), listOf(2))
+        )
+        assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_SOLUTION))))
+    }
 }

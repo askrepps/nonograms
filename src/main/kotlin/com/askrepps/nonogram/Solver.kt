@@ -105,11 +105,6 @@ internal fun applyHintsToLine(
     hints: List<Int>,
     markCell: (Int, CellContents) -> Unit
 ): Boolean {
-    // check if there is anything to do
-    if (lineData.all { it != CellContents.OPEN }) {
-        return false
-    }
-
     // try all valid combinations of spacing between hint values
     val counts = IntArray(lineData.size) { 0 }
     val tempCounts = IntArray(lineData.size) { 0 }
