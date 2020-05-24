@@ -30,6 +30,8 @@ import com.askrepps.nonogram.internal.createEmptyPuzzleDefinitionWithDimensions
 import com.askrepps.nonogram.internal.createFullPuzzleDefinitionWithDimensions
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.has
+import com.natpryce.hamkrest.throws
 import org.junit.Test
 
 /**
@@ -65,5 +67,38 @@ class SolveTest {
                 assertThat(solution.getCell(row, col), equalTo(FILLED))
             }
         }
+    }
+
+    @Test
+    fun testSolveOddCheckerboardPuzzle() {
+        val puzzle = PuzzleDefinition(
+            rows = 3,
+            columns = 3,
+            rowHints = listOf(listOf(1, 1), listOf(1), listOf(1, 1)),
+            columnHints = listOf(listOf(1, 1), listOf(1), listOf(1, 1))
+        )
+        val solution = puzzle.solve()
+        for (row in solution.rowIndices) {
+            for (col in solution.columnIndices) {
+                val expectedValue =
+                    if ((row + col) % 2 == 0) {
+                        FILLED
+                    } else {
+                        X
+                    }
+                assertThat(solution.getCell(row, col), equalTo(expectedValue))
+            }
+        }
+    }
+
+    @Test
+    fun testEvenCheckerboardPuzzleHasNoUniqueSolution() {
+        val puzzle = PuzzleDefinition(
+            rows = 2,
+            columns = 2,
+            rowHints = listOf(listOf(1), listOf(1)),
+            columnHints = listOf(listOf(1), listOf(1))
+        )
+        assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_UNQIUE))))
     }
 }
