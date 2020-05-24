@@ -112,4 +112,36 @@ class SolveTest {
         )
         assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_SOLUTION))))
     }
+
+    @Test
+    fun testSolve5x5Puzzle() {
+        val puzzle = PuzzleDefinition(
+            rows = 5,
+            columns = 5,
+            rowHints = listOf(
+                listOf(5),
+                listOf(3),
+                listOf(3, 1),
+                listOf(4),
+                listOf(0)
+            ),
+            columnHints = listOf(
+                listOf(1, 1),
+                listOf(4),
+                listOf(4),
+                listOf(2, 1),
+                listOf(1, 2)
+            )
+        )
+
+        val expectedSolution = listOf(
+            listOf(FILLED, FILLED, FILLED, FILLED, FILLED),
+            listOf(     X, FILLED, FILLED, FILLED,      X),
+            listOf(FILLED, FILLED, FILLED,      X, FILLED),
+            listOf(     X, FILLED, FILLED, FILLED, FILLED),
+            listOf(     X,      X,      X,      X,      X)
+        )
+
+        assertThat(puzzle.solve().cellGrid, equalTo(expectedSolution))
+    }
 }
