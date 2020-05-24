@@ -124,9 +124,9 @@ internal fun applyHintsToLine(
 
             // validate hint group cells can be filled
             val fillLength = hints[hintIndex]
-            isValid = isValid && validateSection(lineData, CellContents.FILLED, cellIndex, fillLength) {
-                // track which cells are filled
-                tempCounts[it]++
+            isValid = isValid && validateSection(lineData, CellContents.FILLED, cellIndex, fillLength) { filledIndex ->
+                // track which cells are successfully filled
+                tempCounts[filledIndex]++
             }
             cellIndex += fillLength
 
