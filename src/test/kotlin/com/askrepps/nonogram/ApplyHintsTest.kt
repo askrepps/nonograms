@@ -175,6 +175,33 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    @Test
+    fun testApplyShrinkingBorderMultiHintAfterStartingX() {
+        val line = mutableListOf(X, OPEN, OPEN, FILLED, FILLED, OPEN, OPEN, OPEN)
+        val hints = listOf(3, 1)
+        val expectedLine = listOf(X, X, OPEN, FILLED, FILLED, OPEN, OPEN, OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderMultiHintToEmptyEnd() {
+        val line = mutableListOf(OPEN, OPEN, OPEN, OPEN, FILLED, FILLED, OPEN, OPEN)
+        val hints = listOf(1, 3)
+        val expectedLine = listOf(OPEN, OPEN, OPEN, OPEN, FILLED, FILLED, OPEN, X)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplyShrinkingBorderMultiHintBeforeEndingX() {
+        val line = mutableListOf(OPEN, OPEN, OPEN, FILLED, FILLED, OPEN, OPEN, X)
+        val hints = listOf(1, 3)
+        val expectedLine = listOf(OPEN, OPEN, OPEN, FILLED, FILLED, OPEN, X, X)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
         assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(true))
         assertThat(line, equalTo(expectedLine))
