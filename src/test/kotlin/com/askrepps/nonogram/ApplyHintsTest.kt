@@ -229,7 +229,7 @@ class ApplyHintsTest {
     }
 
     @Test
-    fun testSplitHintGroups() {
+    fun testApplySplitHintGroups() {
         // group of 3 is too large for any hint, so the open cell between the fills must be X
         val line = mutableListOf(OPEN, FILLED, OPEN, FILLED, OPEN, OPEN, OPEN, OPEN)
         val hints = listOf(1, 2, 1)
