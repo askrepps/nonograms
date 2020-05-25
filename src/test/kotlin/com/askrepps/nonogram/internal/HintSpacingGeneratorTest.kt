@@ -61,8 +61,8 @@ class HintSpacingGeneratorTest {
         val hints = listOf(9)
         val lineSize = 10
         val expectedSequence = listOf(
-            listOf(1),
-            listOf(0)
+            listOf(0),
+            listOf(1)
         )
         runSequenceTest(hints, lineSize, expectedSequence)
     }
@@ -72,11 +72,11 @@ class HintSpacingGeneratorTest {
         val hints = listOf(6)
         val lineSize = 10
         val expectedSequence = listOf(
-            listOf(4),
-            listOf(3),
-            listOf(2),
+            listOf(0),
             listOf(1),
-            listOf(0)
+            listOf(2),
+            listOf(3),
+            listOf(4)
         )
         runSequenceTest(hints, lineSize, expectedSequence)
     }
@@ -104,24 +104,28 @@ class HintSpacingGeneratorTest {
     @Test
     fun testGenerateSpaceSequenceMultiOneHint() {
         val hints = listOf(1, 1, 1)
-        val lineSize = 10
+        val lineSize = 8
         val expectedSequence = listOf(
-            listOf(5, 1, 1),
-            listOf(4, 2, 1),
-            listOf(3, 3, 1),
-            listOf(2, 4, 1),
-            listOf(1, 5, 1),
-            listOf(0, 6, 1),
-            listOf(0, 5, 2),
-            listOf(0, 4, 3),
-            listOf(0, 3, 4),
-            listOf(0, 2, 5),
-            listOf(0, 1, 6),
-            listOf(0, 1, 5),
-            listOf(0, 1, 4),
-            listOf(0, 1, 3),
+            listOf(0, 1, 1),
             listOf(0, 1, 2),
-            listOf(0, 1, 1)
+            listOf(0, 1, 3),
+            listOf(0, 1, 4),
+            listOf(0, 2, 1),
+            listOf(0, 2, 2),
+            listOf(0, 2, 3),
+            listOf(0, 3, 1),
+            listOf(0, 3, 2),
+            listOf(0, 4, 1),
+            listOf(1, 1, 1),
+            listOf(1, 1, 2),
+            listOf(1, 1, 3),
+            listOf(1, 2, 1),
+            listOf(1, 2, 2),
+            listOf(1, 3, 1),
+            listOf(2, 1, 1),
+            listOf(2, 1, 2),
+            listOf(2, 2, 1),
+            listOf(3, 1, 1)
         )
         runSequenceTest(hints, lineSize, expectedSequence)
     }
@@ -131,9 +135,9 @@ class HintSpacingGeneratorTest {
         val hints = listOf(1, 2)
         val lineSize = 5
         val expectedSequence = listOf(
-            listOf(1, 1),
+            listOf(0, 1),
             listOf(0, 2),
-            listOf(0, 1)
+            listOf(1, 1)
         )
         runSequenceTest(hints, lineSize, expectedSequence)
     }
@@ -143,17 +147,26 @@ class HintSpacingGeneratorTest {
         val hints = listOf(3, 1, 6)
         val lineSize = 15
         val expectedSequence = listOf(
-            listOf(3, 1, 1),
-            listOf(2, 2, 1),
-            listOf(1, 3, 1),
-            listOf(0, 4, 1),
-            listOf(0, 3, 2),
-            listOf(0, 2, 3),
-            listOf(0, 1, 4),
-            listOf(0, 1, 3),
+            listOf(0, 1, 1),
             listOf(0, 1, 2),
-            listOf(0, 1, 1)
-
+            listOf(0, 1, 3),
+            listOf(0, 1, 4),
+            listOf(0, 2, 1),
+            listOf(0, 2, 2),
+            listOf(0, 2, 3),
+            listOf(0, 3, 1),
+            listOf(0, 3, 2),
+            listOf(0, 4, 1),
+            listOf(1, 1, 1),
+            listOf(1, 1, 2),
+            listOf(1, 1, 3),
+            listOf(1, 2, 1),
+            listOf(1, 2, 2),
+            listOf(1, 3, 1),
+            listOf(2, 1, 1),
+            listOf(2, 1, 2),
+            listOf(2, 2, 1),
+            listOf(3, 1, 1)
         )
         runSequenceTest(hints, lineSize, expectedSequence)
     }

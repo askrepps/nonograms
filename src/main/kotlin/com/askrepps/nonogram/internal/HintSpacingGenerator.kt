@@ -39,10 +39,20 @@ internal class HintSpacingGenerator(private val hints: List<Int>, private val li
  */
 internal class HintSpacingIterator(private val hints: List<Int>, private val lineSize: Int) : Iterator<List<Int>> {
     private var currentSpacing = mutableListOf<Int>()
+    private val slack: Int
 
-    override fun hasNext() =
-        // done when all cells are shifted to the left as far as possible
-        currentSpacing.isEmpty() || currentSpacing.first() > 0 || currentSpacing.max()!! > 1
+    init {
+        val maxHint = hints.max() ?: 0
+        slack =
+            if (maxHint > 0) {
+                lineSize - hints.totalHintLength
+            } else {
+                0
+            }
+    }
+
+    // done when all cells are shifted to the right as far as possible
+    override fun hasNext() = currentSpacing.isEmpty() || currentSpacing.first() < slack
 
     override fun next(): List<Int> {
         if (currentSpacing.isEmpty()) {
@@ -54,35 +64,33 @@ internal class HintSpacingIterator(private val hints: List<Int>, private val lin
     }
 
     private fun initializeSpaces() {
-        // start with cells shifted as far to the right as possible
-        val maxHint = hints.max() ?: 0
-        val slack =
-            if (maxHint > 0) {
-                lineSize - hints.totalHintLength
-            } else {
-                0
-            }
-        currentSpacing.add(slack)
+        // start with cells shifted as far to the left as possible
+        currentSpacing.add(0)
         for (i in 1 until hints.size) {
             currentSpacing.add(1)
         }
     }
 
     private fun advanceSpaces() {
-        // shift first available group one cell to the left
-        var advancing = true
-        var index = 0
-        while (advancing && index < currentSpacing.size) {
-            val minSpacing = if (index == 0) 0 else 1
-            if (currentSpacing[index] == minSpacing) {
-                index++
-            } else {
-                currentSpacing[index]--
-                if (index < currentSpacing.size - 1) {
-                    currentSpacing[index + 1]++
+        do {
+            for (index in hints.indices.reversed()) {
+                val (minSpacing, maxSpacing) =
+                    if (index == 0) {
+                        // the first hint group can be flush with the left edge of the grid
+                        Pair(0, slack)
+                    } else {
+                        // other hints groups always have an extra space
+                        //   (included in hints.totalHintLength, not in slack)
+                        Pair(1, slack + 1)
+                    }
+                if (currentSpacing[index] < maxSpacing) {
+                    currentSpacing[index]++
+                    break
+                } else {
+                    currentSpacing[index] = minSpacing
                 }
-                advancing = false
             }
-        }
+        } while (currentSpacing.sum() + hints.sum() > lineSize)
+        // skip over space combinations that will not fit within the line
     }
 }
