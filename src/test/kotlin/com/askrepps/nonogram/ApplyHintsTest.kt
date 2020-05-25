@@ -202,6 +202,32 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    @Test
+    fun testApplySpacedOutOverlap() {
+        // 2 has to be in middle open section
+        val line = mutableListOf(OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN)
+        val hints = listOf(1, 2, 1)
+        val expectedLine = listOf(OPEN, OPEN, OPEN, X, OPEN, FILLED, OPEN, X, OPEN, OPEN, OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplySpacedOutNoOverlapStart() {
+        // 2 could be in first or second open section
+        val line = mutableListOf(OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN)
+        val hints = listOf(2, 1, 1)
+        runNoFurtherChangesTest(line, hints)
+    }
+
+    @Test
+    fun testApplySpacedOutNoOverlapEnd() {
+        // 2 could be in second or third open section
+        val line = mutableListOf(OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN, X, OPEN, OPEN, OPEN)
+        val hints = listOf(1, 1, 2)
+        runNoFurtherChangesTest(line, hints)
+    }
+
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
         assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(true))
         assertThat(line, equalTo(expectedLine))
