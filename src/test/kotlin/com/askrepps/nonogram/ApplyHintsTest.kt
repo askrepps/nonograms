@@ -228,6 +228,16 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    @Test
+    fun testSplitHintGroups() {
+        // group of 3 is too large for any hint, so the open cell between the fills must be X
+        val line = mutableListOf(OPEN, FILLED, OPEN, FILLED, OPEN, OPEN, OPEN, OPEN)
+        val hints = listOf(1, 2, 1)
+        val expectedLine = listOf(X, FILLED, X, FILLED, FILLED, X, OPEN, OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
         assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(true))
         assertThat(line, equalTo(expectedLine))
