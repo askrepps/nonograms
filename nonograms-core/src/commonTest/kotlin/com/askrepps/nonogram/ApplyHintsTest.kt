@@ -28,9 +28,10 @@ import com.askrepps.nonogram.internal.FILLED
 import com.askrepps.nonogram.internal.OPEN
 import com.askrepps.nonogram.internal.X
 import com.askrepps.nonogram.internal.markCell
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests for [applyHints] and supporting functions.
@@ -238,12 +239,18 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
+    //       in a main source set from the corresponding test source set even though the gradle build and tests work
+    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
+
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
-        assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(true))
-        assertThat(line, equalTo(expectedLine))
+        @Suppress("INVISIBLE_MEMBER")
+        assertTrue(applyHintsToLine(line, hints, line.markCell))
+        assertEquals(expectedLine, line)
     }
 
     private fun runNoFurtherChangesTest(line: MutableList<CellContents>, hints: List<Int>) {
-        assertThat(applyHintsToLine(line, hints, line.markCell), equalTo(false))
+        @Suppress("INVISIBLE_MEMBER")
+        assertFalse(applyHintsToLine(line, hints, line.markCell))
     }
 }

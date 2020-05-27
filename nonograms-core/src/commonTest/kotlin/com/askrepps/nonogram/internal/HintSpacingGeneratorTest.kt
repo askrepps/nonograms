@@ -24,9 +24,8 @@
 
 package com.askrepps.nonogram.internal
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests for [HintSpacingIterator].
@@ -171,9 +170,14 @@ class HintSpacingGeneratorTest {
         runSequenceTest(hints, lineSize, expectedSequence)
     }
 
+    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
+    //       in a main source set from the corresponding test source set even though the gradle build and tests work
+    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
+
     private fun generateFullSequence(hints: List<Int>, lineSize: Int) =
+        @Suppress("INVISIBLE_MEMBER")
         HintSpacingGenerator(hints, lineSize).toList()
 
     private fun runSequenceTest(hints: List<Int>, lineSize: Int, expectedSequence: List<List<Int>>) =
-        assertThat(generateFullSequence(hints, lineSize), equalTo(expectedSequence))
+        assertEquals(expectedSequence, generateFullSequence(hints, lineSize))
 }

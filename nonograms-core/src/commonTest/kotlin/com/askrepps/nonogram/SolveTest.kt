@@ -28,11 +28,9 @@ import com.askrepps.nonogram.internal.FILLED
 import com.askrepps.nonogram.internal.X
 import com.askrepps.nonogram.internal.createEmptyPuzzleDefinitionWithDimensions
 import com.askrepps.nonogram.internal.createFullPuzzleDefinitionWithDimensions
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.has
-import com.natpryce.hamkrest.throws
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  * Tests for [solve].
@@ -41,12 +39,12 @@ class SolveTest {
     @Test
     fun testSolvePuzzleDimensions() {
         val solution11 = createEmptyPuzzleDefinitionWithDimensions(1, 1).solve()
-        assertThat(solution11.rows, equalTo(1))
-        assertThat(solution11.columns, equalTo(1))
+        assertEquals(1, solution11.rows)
+        assertEquals(1, solution11.columns)
 
         val solution24 = createEmptyPuzzleDefinitionWithDimensions(2, 4).solve()
-        assertThat(solution24.rows, equalTo(2))
-        assertThat(solution24.columns, equalTo(4))
+        assertEquals(2, solution24.rows)
+        assertEquals(4, solution24.columns)
     }
 
     @Test
@@ -54,7 +52,7 @@ class SolveTest {
         val solution = createEmptyPuzzleDefinitionWithDimensions(2, 3).solve()
         for (row in solution.rowIndices) {
             for (col in solution.columnIndices) {
-                assertThat(solution.getCell(row, col), equalTo(X))
+                assertEquals(X, solution.getCell(row, col))
             }
         }
     }
@@ -64,7 +62,7 @@ class SolveTest {
         val solution = createFullPuzzleDefinitionWithDimensions(3, 2).solve()
         for (row in solution.rowIndices) {
             for (col in solution.columnIndices) {
-                assertThat(solution.getCell(row, col), equalTo(FILLED))
+                assertEquals(FILLED, solution.getCell(row, col))
             }
         }
     }
@@ -86,7 +84,7 @@ class SolveTest {
                     } else {
                         X
                     }
-                assertThat(solution.getCell(row, col), equalTo(expectedValue))
+                assertEquals(expectedValue, solution.getCell(row, col))
             }
         }
     }
@@ -99,7 +97,7 @@ class SolveTest {
             rowHints = listOf(listOf(1), listOf(1)),
             columnHints = listOf(listOf(1), listOf(1))
         )
-        assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_UNQIUE))))
+        assertFailsWith<SolverNoUniqueSolutionException> { puzzle.solve() }
     }
 
     @Test
@@ -110,7 +108,7 @@ class SolveTest {
             rowHints = listOf(listOf(0), listOf(2)),
             columnHints = listOf(listOf(0), listOf(2))
         )
-        assertThat({ puzzle.solve() }, throws(has(SolverException::reason, equalTo(SolverFailureReason.NO_SOLUTION))))
+        assertFailsWith<SolverNoSolutionException> { puzzle.solve() }
     }
 
     @Test
@@ -142,6 +140,6 @@ class SolveTest {
             listOf(     X,      X,      X,      X,      X)
         )
 
-        assertThat(puzzle.solve().cellGrid, equalTo(expectedSolution))
+        assertEquals(expectedSolution, puzzle.solve().cellGrid)
     }
 }

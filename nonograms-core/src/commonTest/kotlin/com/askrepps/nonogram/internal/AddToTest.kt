@@ -24,10 +24,9 @@
 
 package com.askrepps.nonogram.internal
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.throws
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  * Tests for [addTo].
@@ -37,24 +36,33 @@ class AddToTest {
     fun testAddEmptyArrays() {
         val a1 = intArrayOf()
         val a2 = intArrayOf()
-        a1.addTo(a2)
-        assertThat(a1.toList(), equalTo(emptyList()))
-        assertThat(a2.toList(), equalTo(emptyList()))
+        performAddTo(a1, a2)
+        assertEquals(emptyList(), a1.toList())
+        assertEquals(emptyList(), a2.toList())
     }
 
     @Test
     fun testAddArrays() {
         val a1 = intArrayOf(1, 7, -4, 5, 8)
         val a2 = intArrayOf(0, 6, 2, -42, 999)
-        a1.addTo(a2)
-        assertThat(a1.toList(), equalTo(listOf(1, 7, -4, 5, 8)))
-        assertThat(a2.toList(), equalTo(listOf(1, 13, -2, -37, 1007)))
+        performAddTo(a1, a2)
+        assertEquals(listOf(1, 7, -4, 5, 8), a1.toList())
+        assertEquals(listOf(1, 13, -2, -37, 1007), a2.toList())
     }
 
     @Test
     fun testMismatchedArraySizesThrowsException() {
         val a1 = intArrayOf(1, 7, -4, 5, 8)
         val a2 = intArrayOf(0, 6, 2, -42)
-        assertThat({ a1.addTo(a2) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { performAddTo(a1, a2) }
+    }
+
+    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
+    //       in a main source set from the corresponding test source set even though the gradle build and tests work
+    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
+
+    private fun performAddTo(a1: IntArray, a2: IntArray) {
+        @Suppress("INVISIBLE_MEMBER")
+        a1.addTo(a2)
     }
 }

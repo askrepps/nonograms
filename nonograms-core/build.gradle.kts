@@ -23,35 +23,61 @@
  */
 
 plugins {
-    java
-    kotlin("jvm") version "1.3.72"
+    kotlin("multiplatform") version "1.3.72"
     id("org.jetbrains.dokka") version "0.10.1"
 }
-
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
     jcenter()
 }
 
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    testImplementation("junit", "junit", "4.12")
-    testImplementation("com.natpryce", "hamkrest", "1.7.0.3")
-}
+group = "com.askrepps"
+version = "1.0.0"
 
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+kotlin {
+    jvm()
+    js {
+        browser {
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(kotlin("stdlib-common"))
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+        jvm().compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("stdlib-jdk8"))
+            }
+        }
+        jvm().compilations["test"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-junit"))
+            }
+        }
+        js().compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("stdlib-js"))
+            }
+        }
+        js().compilations["test"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
+        }
+    }
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
     dokka
 }

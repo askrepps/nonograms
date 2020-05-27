@@ -46,21 +46,26 @@ fun PuzzleDefinition.solve(): PuzzleState {
 
     // ensure all cells have been marked
     if (!state.cellGrid.all { row -> row.all { cell -> cell != CellContents.OPEN } }) {
-        throw SolverException(SolverFailureReason.NO_UNQIUE, "Puzzle does not have a unique solution")
+        throw SolverNoUniqueSolutionException("Puzzle does not have a unique solution")
     }
 
     return state
 }
 
 /**
- * The reasons a puzzle cannot be solved.
- */
-enum class SolverFailureReason { NO_SOLUTION, NO_UNQIUE }
-
-/**
  * Exception indicating the puzzle could not be solved.
  */
-class SolverException(val reason: SolverFailureReason, message: String) : RuntimeException(message)
+sealed class SolverException(message: String) : RuntimeException(message)
+
+/**
+ * Exception indicating the puzzle has no solution.
+ */
+class SolverNoSolutionException(message: String) : SolverException(message)
+
+/**
+ * Exception indicating the puzzle has no unique solution.
+ */
+class SolverNoUniqueSolutionException(message: String) : SolverException(message)
 
 /**
  * Indicates whether a line is a row or column of the puzzle.
@@ -144,7 +149,7 @@ internal fun applyHintsToLine(
 
     // check for contradictions
     if (validCount == 0) {
-        throw SolverException(SolverFailureReason.NO_SOLUTION, "Puzzle does not have a solution")
+        throw SolverNoSolutionException("Puzzle does not have a solution")
     }
 
     // apply results

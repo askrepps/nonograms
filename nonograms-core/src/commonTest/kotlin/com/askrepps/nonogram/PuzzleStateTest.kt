@@ -27,10 +27,9 @@ package com.askrepps.nonogram
 import com.askrepps.nonogram.internal.FILLED
 import com.askrepps.nonogram.internal.OPEN
 import com.askrepps.nonogram.internal.X
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.throws
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  * Tests for [PuzzleState] and [MutablePuzzleState].
@@ -39,20 +38,20 @@ class PuzzleStateTest {
     @Test
     fun testStateDimensions() {
         val state = PuzzleState(3, 4)
-        assertThat(state.rows, equalTo(3))
-        assertThat(state.columns, equalTo(4))
-        assertThat(state.rowIndices, equalTo(0 until 3))
-        assertThat(state.columnIndices, equalTo(0 until 4))
+        assertEquals(3, state.rows)
+        assertEquals(4, state.columns)
+        assertEquals(0 until 3, state.rowIndices)
+        assertEquals(0 until 4, state.columnIndices)
     }
 
     @Test
     fun testInvalidDimensionsThrowsException() {
-        assertThat({ PuzzleState(0, 1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleState(1, 0) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleState(0, 0) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleState(-1, 1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleState(1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ PuzzleState(-1, -1) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { PuzzleState(0, 1) }
+        assertFailsWith<IllegalArgumentException> { PuzzleState(1, 0) }
+        assertFailsWith<IllegalArgumentException> { PuzzleState(0, 0) }
+        assertFailsWith<IllegalArgumentException> { PuzzleState(-1, 1) }
+        assertFailsWith<IllegalArgumentException> { PuzzleState(1, -1) }
+        assertFailsWith<IllegalArgumentException> { PuzzleState(-1, -1) }
     }
 
     @Test
@@ -68,9 +67,9 @@ class PuzzleStateTest {
     private fun testCellGridDimensions(rows: Int, columns: Int) {
         val state = PuzzleState(rows, columns)
         val grid = state.cellGrid
-        assertThat(grid.size, equalTo(rows))
+        assertEquals(rows, grid.size)
         for (row in grid) {
-            assertThat(row.size, equalTo(columns))
+            assertEquals(columns, row.size)
         }
     }
 
@@ -80,8 +79,8 @@ class PuzzleStateTest {
         val grid = state.cellGrid
         for (row in state.rowIndices) {
             for (col in state.columnIndices) {
-                assertThat(grid[row][col], equalTo(OPEN))
-                assertThat(state.getCell(row, col), equalTo(OPEN))
+                assertEquals(OPEN, grid[row][col])
+                assertEquals(OPEN, state.getCell(row, col))
             }
         }
     }
@@ -89,12 +88,12 @@ class PuzzleStateTest {
     @Test
     fun testInvalidGetCellCoordinatesThrowsException() {
         val state = PuzzleState(10, 15)
-        assertThat({ state.getCell(-1, 0) }, throws<IllegalArgumentException>())
-        assertThat({ state.getCell(0, -1) }, throws<IllegalArgumentException>())
-        assertThat({ state.getCell(-1, -1) }, throws<IllegalArgumentException>())
-        assertThat({ state.getCell(10, 0) }, throws<IllegalArgumentException>())
-        assertThat({ state.getCell(0, 15) }, throws<IllegalArgumentException>())
-        assertThat({ state.getCell(10, 15) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { state.getCell(-1, 0) }
+        assertFailsWith<IllegalArgumentException> { state.getCell(0, -1) }
+        assertFailsWith<IllegalArgumentException> { state.getCell(-1, -1) }
+        assertFailsWith<IllegalArgumentException> { state.getCell(10, 0) }
+        assertFailsWith<IllegalArgumentException> { state.getCell(0, 15) }
+        assertFailsWith<IllegalArgumentException> { state.getCell(10, 15) }
     }
 
     @Test
@@ -111,8 +110,8 @@ class PuzzleStateTest {
                     row == 3 && col == 4 -> X
                     else -> OPEN
                 }
-                assertThat(grid[row][col], equalTo(expectedContents))
-                assertThat(state.getCell(row, col), equalTo(expectedContents))
+                assertEquals(expectedContents, grid[row][col])
+                assertEquals(expectedContents, state.getCell(row, col))
             }
         }
     }
@@ -120,19 +119,19 @@ class PuzzleStateTest {
     @Test
     fun testInvalidMarkCellCoordinatesThrowsException() {
         val state = MutablePuzzleState(10, 15)
-        assertThat({ state.markCell(-1, 0, OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(0, -1, OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(-1, -1, OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(10, 0, OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(0, 15, OPEN) }, throws<IllegalArgumentException>())
-        assertThat({ state.markCell(10, 15, OPEN) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { state.markCell(-1, 0, OPEN) }
+        assertFailsWith<IllegalArgumentException> { state.markCell(0, -1, OPEN) }
+        assertFailsWith<IllegalArgumentException> { state.markCell(-1, -1, OPEN) }
+        assertFailsWith<IllegalArgumentException> { state.markCell(10, 0, OPEN) }
+        assertFailsWith<IllegalArgumentException> { state.markCell(0, 15, OPEN) }
+        assertFailsWith<IllegalArgumentException> { state.markCell(10, 15, OPEN) }
     }
 
     @Test
     fun testSingleRowDimension() {
         val state = PuzzleState(10, 15)
-        assertThat(state.getRow(1).size, equalTo(15))
-        assertThat(state.getRow(7).size, equalTo(15))
+        assertEquals(15, state.getRow(1).size)
+        assertEquals(15, state.getRow(7).size)
     }
 
     @Test
@@ -143,24 +142,24 @@ class PuzzleStateTest {
         state.markCell(1, 1, X)
         state.markCell(1, 2, FILLED)
 
-        assertThat(state.getRow(0), equalTo(listOf(FILLED, X, OPEN)))
-        assertThat(state.getRow(1), equalTo(listOf(OPEN, X, FILLED)))
+        assertEquals(listOf(FILLED, X, OPEN), state.getRow(0))
+        assertEquals(listOf(OPEN, X, FILLED), state.getRow(1))
     }
 
     @Test
     fun testInvalidRowIndexThrowsException() {
         val state = PuzzleState(3, 4)
-        assertThat({ state.getRow(-1) }, throws<IllegalArgumentException>())
-        assertThat({ state.getRow(-42) }, throws<IllegalArgumentException>())
-        assertThat({ state.getRow(3) }, throws<IllegalArgumentException>())
-        assertThat({ state.getRow(42) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { state.getRow(-1) }
+        assertFailsWith<IllegalArgumentException> { state.getRow(-42) }
+        assertFailsWith<IllegalArgumentException> { state.getRow(3) }
+        assertFailsWith<IllegalArgumentException> { state.getRow(42) }
     }
 
     @Test
     fun testSingleColumnDimensions() {
         val state = PuzzleState(10, 15)
-        assertThat(state.getColumn(1).size, equalTo(10))
-        assertThat(state.getColumn(12).size, equalTo(10))
+        assertEquals(10, state.getColumn(1).size)
+        assertEquals(10, state.getColumn(12).size)
     }
 
     @Test
@@ -171,17 +170,17 @@ class PuzzleStateTest {
         state.markCell(1, 1, X)
         state.markCell(1, 2, FILLED)
 
-        assertThat(state.getColumn(0), equalTo(listOf(FILLED, OPEN)))
-        assertThat(state.getColumn(1), equalTo(listOf(X, X)))
-        assertThat(state.getColumn(2), equalTo(listOf(OPEN, FILLED)))
+        assertEquals(listOf(FILLED, OPEN), state.getColumn(0))
+        assertEquals(listOf(X, X), state.getColumn(1))
+        assertEquals(listOf(OPEN, FILLED), state.getColumn(2))
     }
 
     @Test
     fun testInvalidColumnIndexThrowsException() {
         val state = PuzzleState(4, 3)
-        assertThat({ state.getColumn(-1) }, throws<IllegalArgumentException>())
-        assertThat({ state.getColumn(-42) }, throws<IllegalArgumentException>())
-        assertThat({ state.getColumn(3) }, throws<IllegalArgumentException>())
-        assertThat({ state.getColumn(42) }, throws<IllegalArgumentException>())
+        assertFailsWith<IllegalArgumentException> { state.getColumn(-1) }
+        assertFailsWith<IllegalArgumentException> { state.getColumn(-42) }
+        assertFailsWith<IllegalArgumentException> { state.getColumn(3) }
+        assertFailsWith<IllegalArgumentException> { state.getColumn(42) }
     }
 }

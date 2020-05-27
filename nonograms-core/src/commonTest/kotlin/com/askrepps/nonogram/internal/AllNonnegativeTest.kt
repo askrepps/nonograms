@@ -24,9 +24,8 @@
 
 package com.askrepps.nonogram.internal
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests for [allNonnegative].
@@ -34,62 +33,71 @@ import org.junit.Test
 class AllNonnegativeTest {
     @Test
     fun testEmptyListAllNonnegative() {
-        assertThat(emptyList<Int>().allNonnegative, equalTo(true))
+        runAllNonnegativeTest(emptyList(), true)
     }
 
     @Test
     fun testSingleZeroValueAllNonnegative() {
-        assertThat(listOf(0).allNonnegative, equalTo(true))
+        runAllNonnegativeTest(listOf(0), true)
     }
 
     @Test
     fun testSinglePositiveValueAllNonnegative() {
-        assertThat(listOf(1).allNonnegative, equalTo(true))
-        assertThat(listOf(42).allNonnegative, equalTo(true))
+        runAllNonnegativeTest(listOf(1), true)
+        runAllNonnegativeTest(listOf(42), true)
     }
 
     @Test
     fun testMultipleNonnegativeValuesAllNonnegative() {
-        assertThat(listOf(1, 0, 7, 42).allNonnegative, equalTo(true))
+        runAllNonnegativeTest(listOf(1, 0, 7, 42), true)
     }
 
     @Test
     fun testSingleNegativeValueNotAllNonnegative() {
-        assertThat(listOf(-1).allNonnegative, equalTo(false))
-        assertThat(listOf(-7).allNonnegative, equalTo(false))
+        runAllNonnegativeTest(listOf(-1), false)
+        runAllNonnegativeTest(listOf(-7), false)
     }
 
     @Test
     fun testOneNegativeValueNotAllNonnegative() {
-        assertThat(listOf(-1, 0, 7, 42).allNonnegative, equalTo(false))
-        assertThat(listOf(1, 0, -7, 42).allNonnegative, equalTo(false))
-        assertThat(listOf(1, 0, 7, -42).allNonnegative, equalTo(false))
+        runAllNonnegativeTest(listOf(-1, 0, 7, 42), false)
+        runAllNonnegativeTest(listOf(1, 0, -7, 42), false)
+        runAllNonnegativeTest(listOf(1, 0, 7, -42), false)
     }
 
     @Test
     fun testAllNegativeValuesNotAllNonnegative() {
-        assertThat(listOf(-1, -7, -42).allNonnegative, equalTo(false))
+        runAllNonnegativeTest(listOf(-1, -7, -42), false)
     }
 
     @Test
     fun testOtherIterableTypesAllNonnegative() {
-        assertThat(emptySet<Int>().allNonnegative, equalTo(true))
-        assertThat(setOf(0).allNonnegative, equalTo(true))
-        assertThat(setOf(1, 0, 7, 42).allNonnegative, equalTo(true))
+        runAllNonnegativeTest(emptySet(), true)
+        runAllNonnegativeTest(setOf(0), true)
+        runAllNonnegativeTest(setOf(1, 0, 7, 42), true)
 
-        assertThat((0 until 0).allNonnegative, equalTo(true))
-        assertThat((0..0).allNonnegative, equalTo(true))
-        assertThat((0..10).allNonnegative, equalTo(true))
+        runAllNonnegativeTest((0 until 0), true)
+        runAllNonnegativeTest((0..0), true)
+        runAllNonnegativeTest((0..10), true)
     }
 
     @Test
     fun testOtherIterableTypesNotAllNonnegative() {
-        assertThat(setOf(-1).allNonnegative, equalTo(false))
-        assertThat(setOf(1, 0, -7, 42).allNonnegative, equalTo(false))
-        assertThat(setOf(-1, -7, -42).allNonnegative, equalTo(false))
+        runAllNonnegativeTest(setOf(-1), false)
+        runAllNonnegativeTest(setOf(1, 0, -7, 42), false)
+        runAllNonnegativeTest(setOf(-1, -7, -42), false)
 
-        assertThat((-1..-1).allNonnegative, equalTo(false))
-        assertThat((-1..10).allNonnegative, equalTo(false))
-        assertThat((-10..-1).allNonnegative, equalTo(false))
+        runAllNonnegativeTest((-1..-1), false)
+        runAllNonnegativeTest((-1..10), false)
+        runAllNonnegativeTest((-10..-1), false)
+    }
+
+    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
+    //       in a main source set from the corresponding test source set even though the gradle build and tests work
+    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
+
+    @Suppress("INVISIBLE_MEMBER")
+    private fun runAllNonnegativeTest(iterable: Iterable<Int>, expectedResult: Boolean) {
+        assertEquals(expectedResult, iterable.allNonnegative)
     }
 }

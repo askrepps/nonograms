@@ -22,4 +22,8 @@
  * SOFTWARE.
  */
 
-rootProject.name = "nonogram-solver"
+rootProject.name = "nonograms"
+
+include("nonograms-core")
+
+enableFeaturePreview("GRADLE_METADATA")
