@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-rootProject.name = "nonograms"
+package com.askrepps.nonogram
 
-enableFeaturePreview("GRADLE_METADATA")
-
-include("nonograms-core", "nonograms-web")
+fun main() {
+    console.log("Hello world from Kotlin JS!")
+}

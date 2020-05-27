@@ -24,60 +24,30 @@
 
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.dokka")
 }
+
+group = "com.askrepps"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
     jcenter()
 }
 
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
-
 kotlin {
-    jvm()
     js {
-        browser {
-        }
+        browser()
     }
 
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(kotlin("stdlib-common"))
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-        jvm().compilations["main"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("stdlib-jdk8"))
-            }
-        }
-        jvm().compilations["test"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-            }
-        }
-        js().compilations["main"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-            }
-        }
-        js().compilations["test"].defaultSourceSet {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
+    js().compilations["main"].defaultSourceSet {
+        dependencies {
+            implementation(kotlin("stdlib-js"))
+            implementation(project(":nonograms-core"))
         }
     }
-}
-
-tasks {
-    dokka
+    js().compilations["test"].defaultSourceSet {
+        dependencies {
+            implementation(kotlin("test-js"))
+        }
+    }
 }
