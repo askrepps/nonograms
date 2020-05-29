@@ -239,6 +239,16 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
+    @Test
+    fun testApplyThatHintGroupHasToBeAOne() {
+        // filled cell must be the first or second 1 (but nothing else can be deduced)
+        val line = mutableListOf(OPEN, OPEN, OPEN, OPEN, OPEN, FILLED, OPEN, OPEN, OPEN, OPEN, OPEN, OPEN)
+        val hints = listOf(2, 1, 1, 2)
+        val expectedLine = listOf(OPEN, OPEN, OPEN, OPEN, X, FILLED, X, OPEN, OPEN, OPEN, OPEN ,OPEN)
+        runApplyHintTest(line, hints, expectedLine)
+        runNoFurtherChangesTest(line, hints)
+    }
+
     // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
     //       in a main source set from the corresponding test source set even though the gradle build and tests work
     //       (see https://youtrack.jetbrains.com/issue/KT-38842)
