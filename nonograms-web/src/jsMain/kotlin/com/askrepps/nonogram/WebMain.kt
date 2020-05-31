@@ -120,5 +120,12 @@ fun main() {
                 }
             }
         }
+
+        br
+        br
+        a {
+            href = "3RD-PARTY-LICENSES.txt"
+            +"Third-Party License Notice"
+        }
     }
 }
