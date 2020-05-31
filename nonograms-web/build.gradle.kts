@@ -41,8 +41,9 @@ kotlin {
 
     js().compilations["main"].defaultSourceSet {
         dependencies {
-            implementation(kotlin("stdlib-js"))
             implementation(project(":nonograms-core"))
+            implementation(kotlin("stdlib-js"))
+            implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
         }
     }
     js().compilations["test"].defaultSourceSet {

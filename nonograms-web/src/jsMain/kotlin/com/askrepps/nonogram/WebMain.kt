@@ -24,6 +24,101 @@
 
 package com.askrepps.nonogram
 
+import kotlinx.html.*
+import kotlinx.html.dom.append
+import kotlinx.html.js.div
+import kotlin.browser.document
+
+private fun CellContents.printedSymbol() =
+    when (this) {
+        CellContents.OPEN -> " "
+        CellContents.FILLED -> "■"
+        CellContents.X -> "x"
+    }
+
 fun main() {
-    console.log("Hello world from Kotlin JS!")
+    val puzzleDefinition = PuzzleDefinition(
+        rows = 8,
+        columns = 8,
+        rowHints = listOf(
+            listOf(0),
+            listOf(1, 1),
+            listOf(1, 1),
+            listOf(1, 1),
+            listOf(0),
+            listOf(0),
+            listOf(6),
+            listOf(0)
+        ),
+        columnHints = listOf(
+            listOf(0),
+            listOf(1),
+            listOf(3, 1),
+            listOf(1),
+            listOf(1),
+            listOf(3, 1),
+            listOf(1),
+            listOf(0)
+        )
+    )
+
+    val solution = puzzleDefinition.solve()
+    val hintTableRows = puzzleDefinition.columnHints.maxBy { it.size }?.size ?: 0
+    val hintTableColumns = puzzleDefinition.rowHints.maxBy { it.size }?.size ?: 0
+    val totalTableColumns = solution.columns + hintTableColumns
+
+    document.body!!.append.div {
+        h1 {
+            +"Nonogram Solver"
+        }
+
+        p {
+            +"Solution to placeholder hard-coded puzzle:"
+        }
+
+        table {
+            style = "border-collapse: collapse;"
+            for (hintRow in 0 until hintTableRows) {
+                tr {
+                    for (column in 0 until totalTableColumns) {
+                        td {
+                            val hintColumnIndex = column - hintTableColumns
+                            if (hintColumnIndex in puzzleDefinition.columnHints.indices) {
+                                val hints = puzzleDefinition.columnHints[hintColumnIndex]
+                                val hintIndex = hints.size - hintTableRows + hintRow
+                                if (hintIndex in hints.indices) {
+                                    +hints[hintIndex].toString()
+                                } else {
+                                    +""
+                                }
+                            } else {
+                                +""
+                            }
+                        }
+                    }
+                }
+            }
+            for (puzzleRow in solution.rowIndices) {
+                tr {
+                    for (column in 0 until totalTableColumns) {
+                        td {
+                            if (column < hintTableColumns) {
+                                val hints = puzzleDefinition.rowHints[puzzleRow]
+                                val hintIndex = hints.size - hintTableColumns + column
+                                if (hintIndex in hints.indices) {
+                                    +hints[hintIndex].toString()
+                                } else {
+                                    +""
+                                }
+                            } else {
+                                style = "border: 1px solid black;"
+                                val puzzleColumn = column - hintTableColumns
+                                +solution.getCell(puzzleRow, puzzleColumn).printedSymbol()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
