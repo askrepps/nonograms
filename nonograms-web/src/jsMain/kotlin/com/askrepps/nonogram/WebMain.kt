@@ -141,6 +141,7 @@ private fun DIV.addButtons() {
     input {
         type = InputType.button
         value = "Puzzle 0"
+        style = "margin-right: 10px;"
         onClickFunction = {
             solvePuzzle(0)
         }
@@ -148,6 +149,7 @@ private fun DIV.addButtons() {
     input {
         type = InputType.button
         value = "Puzzle 1"
+        style = "margin-right: 10px;"
         onClickFunction = {
             solvePuzzle(1)
         }
