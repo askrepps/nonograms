@@ -27,6 +27,8 @@ package com.askrepps.nonogram
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.js.div
+import kotlinx.html.js.onClickFunction
+import org.w3c.dom.asList
 import kotlin.browser.document
 
 private fun CellContents.printedSymbol() =
@@ -36,96 +38,178 @@ private fun CellContents.printedSymbol() =
         CellContents.X -> "x"
     }
 
-fun main() {
-    val puzzleDefinition = PuzzleDefinition(
-        rows = 8,
-        columns = 8,
-        rowHints = listOf(
-            listOf(0),
-            listOf(1, 1),
-            listOf(1, 1),
-            listOf(1, 1),
-            listOf(0),
-            listOf(0),
-            listOf(6),
-            listOf(0)
-        ),
-        columnHints = listOf(
-            listOf(0),
-            listOf(1),
-            listOf(3, 1),
-            listOf(1),
-            listOf(1),
-            listOf(3, 1),
-            listOf(1),
-            listOf(0)
-        )
-    )
+private fun clearPage() {
+    document.body?.let { body ->
+        for (child in body.children.asList()) {
+            child.remove()
+        }
+    }
+}
 
-    val solution = puzzleDefinition.solve()
+private fun renderErrorPage(e: SolverException) {
+    clearPage()
+    document.body!!.append.div {
+        addTitle()
+        addButtons()
+        p {
+            style = "color: red;"
+            +(e.message ?: "Unknown error occurred")
+        }
+        addFooter()
+    }
+}
+
+private fun renderSolutionPage(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) {
+    clearPage()
+    document.body!!.append.div {
+        addTitle()
+        addButtons()
+        br
+        br
+        addSolutionTable(puzzleDefinition, solution)
+        br
+        br
+        addFooter()
+    }
+}
+
+private fun DIV.addTitle() {
+    h1 {
+        +"Nonogram Solver"
+    }
+}
+
+private fun DIV.addSolutionTable(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) {
     val hintTableRows = puzzleDefinition.columnHints.maxBy { it.size }?.size ?: 0
     val hintTableColumns = puzzleDefinition.rowHints.maxBy { it.size }?.size ?: 0
     val totalTableColumns = solution.columns + hintTableColumns
 
-    document.body!!.append.div {
-        h1 {
-            +"Nonogram Solver"
-        }
-
-        p {
-            +"Solution to placeholder hard-coded puzzle:"
-        }
-
-        table {
-            style = "border-collapse: collapse;"
-            for (hintRow in 0 until hintTableRows) {
-                tr {
-                    for (column in 0 until totalTableColumns) {
-                        td {
-                            val hintColumnIndex = column - hintTableColumns
-                            if (hintColumnIndex in puzzleDefinition.columnHints.indices) {
-                                val hints = puzzleDefinition.columnHints[hintColumnIndex]
-                                val hintIndex = hints.size - hintTableRows + hintRow
-                                if (hintIndex in hints.indices) {
-                                    +hints[hintIndex].toString()
-                                } else {
-                                    +""
-                                }
+    table {
+        style = "border-collapse: collapse;"
+        for (hintRow in 0 until hintTableRows) {
+            tr {
+                for (column in 0 until totalTableColumns) {
+                    td {
+                        val hintColumnIndex = column - hintTableColumns
+                        if (hintColumnIndex in puzzleDefinition.columnHints.indices) {
+                            val hints = puzzleDefinition.columnHints[hintColumnIndex]
+                            val hintIndex = hints.size - hintTableRows + hintRow
+                            if (hintIndex in hints.indices) {
+                                +hints[hintIndex].toString()
                             } else {
                                 +""
                             }
-                        }
-                    }
-                }
-            }
-            for (puzzleRow in solution.rowIndices) {
-                tr {
-                    for (column in 0 until totalTableColumns) {
-                        td {
-                            if (column < hintTableColumns) {
-                                val hints = puzzleDefinition.rowHints[puzzleRow]
-                                val hintIndex = hints.size - hintTableColumns + column
-                                if (hintIndex in hints.indices) {
-                                    +hints[hintIndex].toString()
-                                } else {
-                                    +""
-                                }
-                            } else {
-                                style = "border: 1px solid black;"
-                                val puzzleColumn = column - hintTableColumns
-                                +solution.getCell(puzzleRow, puzzleColumn).printedSymbol()
-                            }
+                        } else {
+                            +""
                         }
                     }
                 }
             }
         }
-
-        br
-        br
-        a {
-            href = "3RD-PARTY-LICENSES.txt"
-            +"Third-Party License Notice"
+        for (puzzleRow in solution.rowIndices) {
+            tr {
+                for (column in 0 until totalTableColumns) {
+                    td {
+                        if (column < hintTableColumns) {
+                            val hints = puzzleDefinition.rowHints[puzzleRow]
+                            val hintIndex = hints.size - hintTableColumns + column
+                            if (hintIndex in hints.indices) {
+                                +hints[hintIndex].toString()
+                            } else {
+                                +""
+                            }
+                        } else {
+                            style = "border: 1px solid black;"
+                            val puzzleColumn = column - hintTableColumns
+                            +solution.getCell(puzzleRow, puzzleColumn).printedSymbol()
+                        }
+                    }
+                }
+            }
         }
     }
+}
+
+private fun DIV.addButtons() {
+    input {
+        type = InputType.button
+        value = "Puzzle 0"
+        onClickFunction = {
+            solvePuzzle(0)
+        }
+    }
+    input {
+        type = InputType.button
+        value = "Puzzle 1"
+        onClickFunction = {
+            solvePuzzle(1)
+        }
+    }
+}
+
+private fun DIV.addFooter() {
+    a {
+        href = "3RD-PARTY-LICENSES.txt"
+        +"Third-Party License Notice"
+    }
+}
+
+fun solvePuzzle(puzzleId: Int) {
+    val puzzleDefinition =
+        when (puzzleId) {
+            0 -> PuzzleDefinition(
+                rows = 8,
+                columns = 8,
+                rowHints = listOf(
+                    listOf(0),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(0),
+                    listOf(0),
+                    listOf(6),
+                    listOf(0)
+                ),
+                columnHints = listOf(
+                    listOf(0),
+                    listOf(1),
+                    listOf(3, 1),
+                    listOf(1),
+                    listOf(1),
+                    listOf(3, 1),
+                    listOf(1),
+                    listOf(0)
+                )
+            )
+            1 -> PuzzleDefinition(
+                rows = 5,
+                columns = 5,
+                rowHints = listOf(
+                    listOf(5),
+                    listOf(3),
+                    listOf(3, 1),
+                    listOf(4),
+                    listOf(0)
+                ),
+                columnHints = listOf(
+                    listOf(1, 1),
+                    listOf(4),
+                    listOf(4),
+                    listOf(2, 1),
+                    listOf(1, 2)
+                )
+            )
+            else -> throw IllegalArgumentException("Unknown puzzle ID $puzzleId")
+        }
+
+    try {
+        val solution = puzzleDefinition.solve()
+        renderSolutionPage(puzzleDefinition, solution)
+    } catch (e: SolverException) {
+        renderErrorPage(e)
+    }
+}
+
+fun main() {
+    solvePuzzle(0)
 }
