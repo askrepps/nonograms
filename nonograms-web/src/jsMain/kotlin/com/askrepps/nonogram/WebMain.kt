@@ -46,15 +46,22 @@ private fun clearPage() {
     }
 }
 
-private fun renderErrorPage(e: SolverException) {
+private fun renderErrorPage(puzzleDefinition: PuzzleDefinition, e: SolverException) {
     clearPage()
     document.body!!.append.div {
         addTitle()
         addButtons()
+        e.state?.let { state ->
+            br
+            br
+            addSolutionTable(puzzleDefinition, state)
+        }
         p {
             style = "color: red;"
             +(e.message ?: "Unknown error occurred")
         }
+        br
+        br
         addFooter()
     }
 }
@@ -145,6 +152,13 @@ private fun DIV.addButtons() {
             solvePuzzle(1)
         }
     }
+    input {
+        type = InputType.button
+        value = "Puzzle 2 (no unique solution)"
+        onClickFunction = {
+            solvePuzzle(2)
+        }
+    }
 }
 
 private fun DIV.addFooter() {
@@ -199,6 +213,30 @@ fun solvePuzzle(puzzleId: Int) {
                     listOf(1, 2)
                 )
             )
+            2 -> PuzzleDefinition(
+                rows = 8,
+                columns = 8,
+                rowHints = listOf(
+                    listOf(0),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(0),
+                    listOf(1, 1),
+                    listOf(4),
+                    listOf(0)
+                ),
+                columnHints = listOf(
+                    listOf(0),
+                    listOf(1),
+                    listOf(3, 1),
+                    listOf(1),
+                    listOf(1),
+                    listOf(3, 1),
+                    listOf(1),
+                    listOf(0)
+                )
+            )
             else -> throw IllegalArgumentException("Unknown puzzle ID $puzzleId")
         }
 
@@ -206,7 +244,7 @@ fun solvePuzzle(puzzleId: Int) {
         val solution = puzzleDefinition.solve()
         renderSolutionPage(puzzleDefinition, solution)
     } catch (e: SolverException) {
-        renderErrorPage(e)
+        renderErrorPage(puzzleDefinition, e)
     }
 }
 

@@ -46,7 +46,7 @@ fun PuzzleDefinition.solve(): PuzzleState {
 
     // ensure all cells have been marked
     if (!state.cellGrid.all { row -> row.all { cell -> cell != CellContents.OPEN } }) {
-        throw SolverNoUniqueSolutionException("Puzzle does not have a unique solution")
+        throw SolverNoUniqueSolutionException("Puzzle does not have a unique solution", state)
     }
 
     return state
@@ -55,17 +55,29 @@ fun PuzzleDefinition.solve(): PuzzleState {
 /**
  * Exception indicating the puzzle could not be solved.
  */
-sealed class SolverException(message: String) : RuntimeException(message)
+sealed class SolverException(
+    message: String,
+    val state: PuzzleState?,
+    override val cause: Throwable? = null
+) : RuntimeException(message)
 
 /**
  * Exception indicating the puzzle has no solution.
  */
-class SolverNoSolutionException(message: String) : SolverException(message)
+class SolverNoSolutionException(
+    message: String,
+    state: PuzzleState?,
+    override val cause: Throwable? = null
+) : SolverException(message, state)
 
 /**
  * Exception indicating the puzzle has no unique solution.
  */
-class SolverNoUniqueSolutionException(message: String) : SolverException(message)
+class SolverNoUniqueSolutionException(
+    message: String,
+    state: PuzzleState?,
+    override val cause: Throwable? = null
+) : SolverException(message, state)
 
 /**
  * Indicates whether a line is a row or column of the puzzle.
@@ -84,17 +96,22 @@ internal fun MutablePuzzleState.applyHints(
     lineIndex: Int,
     rowOrColumn: RowOrColumn
 ): Boolean {
-    return when (rowOrColumn) {
-        RowOrColumn.ROW -> {
-            applyHintsToLine(getRow(lineIndex), puzzle.rowHints[lineIndex]) { col, contents ->
-                markCell(lineIndex, col, contents)
+    try {
+        return when (rowOrColumn) {
+            RowOrColumn.ROW -> {
+                applyHintsToLine(getRow(lineIndex), puzzle.rowHints[lineIndex]) { col, contents ->
+                    markCell(lineIndex, col, contents)
+                }
+            }
+            RowOrColumn.COLUMN -> {
+                applyHintsToLine(getColumn(lineIndex), puzzle.columnHints[lineIndex]) { row, contents ->
+                    markCell(row, lineIndex, contents)
+                }
             }
         }
-        RowOrColumn.COLUMN -> {
-            applyHintsToLine(getColumn(lineIndex), puzzle.columnHints[lineIndex]) { row, contents ->
-                markCell(row, lineIndex, contents)
-            }
-        }
+    } catch (e: SolverNoSolutionException) {
+        // attach state to exception and re-throw
+        throw SolverNoSolutionException(message = checkNotNull(e.message), state = this, cause = e)
     }
 }
 
@@ -149,7 +166,7 @@ internal fun applyHintsToLine(
 
     // check for contradictions
     if (validCount == 0) {
-        throw SolverNoSolutionException("Puzzle does not have a solution")
+        throw SolverNoSolutionException("Puzzle does not have a solution", null)
     }
 
     // apply results
