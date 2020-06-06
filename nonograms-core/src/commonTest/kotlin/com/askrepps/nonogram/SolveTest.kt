@@ -142,4 +142,46 @@ class SolveTest {
 
         assertEquals(expectedSolution, puzzle.solve().cellGrid)
     }
+
+    @Test
+    fun testSolveSmilePuzzle() {
+        val puzzle = PuzzleDefinition(
+            rows = 8,
+            columns = 8,
+            rowHints = listOf(
+                listOf(0),
+                listOf(1, 1),
+                listOf(1, 1),
+                listOf(1, 1),
+                listOf(0),
+                listOf(1, 1),
+                listOf(4),
+                listOf(0)
+            ),
+            columnHints = listOf(
+                listOf(0),
+                listOf(1),
+                listOf(3, 1),
+                listOf(1),
+                listOf(1),
+                listOf(3, 1),
+                listOf(1),
+                listOf(0)
+            )
+        )
+
+        // puzzle has a unique solution, but it requires considering multiple lines at once
+        val expectedSolution = listOf(
+            listOf(X,      X,      X,      X,      X,      X,      X, X),
+            listOf(X,      X, FILLED,      X,      X, FILLED,      X, X),
+            listOf(X,      X, FILLED,      X,      X, FILLED,      X, X),
+            listOf(X,      X, FILLED,      X,      X, FILLED,      X, X),
+            listOf(X,      X,      X,      X,      X,      X,      X, X),
+            listOf(X, FILLED,      X,      X,      X,      X, FILLED, X),
+            listOf(X,      X, FILLED, FILLED, FILLED, FILLED,      X, X),
+            listOf(X,      X,      X,      X,      X,      X,      X, X)
+        )
+
+        assertEquals(expectedSolution, puzzle.solve().cellGrid)
+    }
 }
