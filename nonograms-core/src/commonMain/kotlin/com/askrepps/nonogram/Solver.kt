@@ -35,17 +35,15 @@ import com.askrepps.nonogram.internal.addTo
 fun PuzzleDefinition.solve(): PuzzleState {
     val state = MutablePuzzleState(rows, columns)
     do {
-        var changesMade = false
-        for (row in rowIndices) {
-            changesMade = state.applyHints(this, row, RowOrColumn.ROW) || changesMade
-        }
-        for (col in columnIndices) {
-            changesMade = state.applyHints(this, col, RowOrColumn.COLUMN) || changesMade
+        var changesMade = state.applySingleLineHints(this)
+        if (!state.isFullyMarked()) {
+            if (state.applyHintsMultiLine(this)) {
+                changesMade = true
+            }
         }
     } while (changesMade)
 
-    // ensure all cells have been marked
-    if (!state.cellGrid.all { row -> row.all { cell -> cell != CellContents.OPEN } }) {
+    if (!state.isFullyMarked()) {
         throw SolverNoUniqueSolutionException("Puzzle does not have a unique solution", state)
     }
 
@@ -85,11 +83,39 @@ class SolverNoUniqueSolutionException(
 internal enum class RowOrColumn { ROW, COLUMN }
 
 /**
+ * Run solver algorithm that considers each [puzzle] row and column in isolation.
+ *
+ * @return true if changes were made to the puzzle state, false otherwise.
+ *
+ * @throws SolverNoSolutionException if the puzzle has no solution.
+ */
+internal fun MutablePuzzleState.applySingleLineHints(puzzle: PuzzleDefinition): Boolean {
+    var anyChangesMade = false
+    do {
+        var changesMadeThisPass = false
+        for (row in rowIndices) {
+            if (applyHints(puzzle, row, RowOrColumn.ROW)) {
+                changesMadeThisPass = true
+            }
+        }
+        for (col in columnIndices) {
+            if (applyHints(puzzle, col, RowOrColumn.COLUMN)) {
+                changesMadeThisPass = true
+            }
+        }
+        if (changesMadeThisPass) {
+            anyChangesMade = true
+        }
+    } while (changesMadeThisPass)
+    return anyChangesMade
+}
+
+/**
  * Apply hints to a row or column of the puzzle.
  *
  * @return true if changes were made to the puzzle state, false otherwise.
  *
- * @throws SolverException if the puzzle has no solution.
+ * @throws SolverNoSolutionException if the puzzle has no solution.
  */
 internal fun MutablePuzzleState.applyHints(
     puzzle: PuzzleDefinition,
@@ -217,3 +243,14 @@ private fun validateSection(
     }
     return isValid
 }
+
+/**
+ * Run solver algorithm that considers multiple [puzzle] rows and columns in combination.
+ *
+ * @return true if changes were made to the puzzle state, false otherwise.
+ */
+internal fun MutablePuzzleState.applyHintsMultiLine(puzzle: PuzzleDefinition): Boolean {
+    return false
+}
+
+private fun PuzzleState.isFullyMarked(): Boolean = cellGrid.all { row -> row.all { it != CellContents.OPEN } }
