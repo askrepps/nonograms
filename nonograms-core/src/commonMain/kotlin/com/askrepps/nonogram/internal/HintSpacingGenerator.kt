@@ -38,7 +38,7 @@ internal class HintSpacingGenerator(private val hints: List<Int>, private val li
  * This code assumes the hints are valid and consistent w.r.t. the rules checked during puzzle initialization.
  */
 internal class HintSpacingIterator(private val hints: List<Int>, private val lineSize: Int) : Iterator<List<Int>> {
-    private var currentSpacing = mutableListOf<Int>()
+    private val currentSpacing = mutableListOf<Int>()
     private val slack: Int
 
     init {

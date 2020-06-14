@@ -47,6 +47,18 @@ internal val Iterable<Int>.allNonnegative get() = all { it >= 0 }
 internal val Collection<Int>.anyZeroStandsAlone get() = size == 1 || !contains(0)
 
 /**
+ * Check if any element in a [Collection] at the given index satisfies the [predicate].
+ */
+internal inline fun <T> Collection<T>.anyIndexed(crossinline predicate: (Int, T) -> Boolean): Boolean {
+    forEachIndexed { index, element ->
+        if (predicate(index, element)) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
  * Get the total length required to fit a [List] of nonogram hints in a row or column (including spaces between hints).
  *
  * This property assumes that hint values are valid (all non-negative, zero stands alone, etc.).
