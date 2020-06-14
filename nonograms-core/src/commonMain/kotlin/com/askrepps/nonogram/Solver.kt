@@ -158,30 +158,13 @@ internal fun applyHintsToLine(
     val tempCounts = IntArray(lineData.size) { 0 }
     var validCount = 0
     for (spaces in HintSpacingGenerator(hints, lineData.size)) {
-        var isValid = true
-        var cellIndex = 0
-        var hintIndex = 0
-
-        // validate each hint group can be satisfied with the current spacing
         tempCounts.fill(0)
-        while (isValid && hintIndex < hints.size) {
-            // validate cells before hint group can be X
-            val xLength = spaces[hintIndex]
-            isValid = isValid && validateSection(lineData, CellContents.X, cellIndex, xLength)
-            cellIndex += xLength
-
-            // validate hint group cells can be filled
-            val fillLength = hints[hintIndex]
-            isValid = isValid && validateSection(lineData, CellContents.FILLED, cellIndex, fillLength) { filledIndex ->
-                // track which cells are successfully filled
-                tempCounts[filledIndex]++
+        val isValid = validateSpacing(lineData, hints, spaces) { contents, index ->
+            // track which cells are successfully filled
+            if (contents == CellContents.FILLED) {
+                tempCounts[index]++
             }
-            cellIndex += fillLength
-
-            hintIndex++
         }
-        // validate remainder of cells can be X
-        isValid = isValid && validateSection(lineData, CellContents.X, cellIndex)
 
         if (isValid) {
             // add valid filled cells to the total counts to track overlap between spacing combinations
@@ -212,12 +195,40 @@ internal fun applyHintsToLine(
     return changes
 }
 
+private fun validateSpacing(
+    lineData: List<CellContents>,
+    hints: List<Int>,
+    spaces: List<Int>,
+    onCellValid: (CellContents, Int) -> Unit = { _, _ -> }
+): Boolean {
+    var isValid = true
+    var cellIndex = 0
+    var hintIndex = 0
+
+    // validate each hint group can be satisfied with the current spacing
+    while (isValid && hintIndex < hints.size) {
+        // validate cells before hint group can be X
+        val xLength = spaces[hintIndex]
+        isValid = isValid && validateSection(lineData, CellContents.X, cellIndex, xLength, onCellValid)
+        cellIndex += xLength
+
+        // validate hint group cells can be filled
+        val fillLength = hints[hintIndex]
+        isValid = isValid && validateSection(lineData, CellContents.FILLED, cellIndex, fillLength, onCellValid)
+        cellIndex += fillLength
+
+        hintIndex++
+    }
+    // validate remainder of cells can be X
+    return isValid && validateSection(lineData, CellContents.X, cellIndex, onCellValid = onCellValid)
+}
+
 private fun validateSection(
     lineData: List<CellContents>,
     contents: CellContents,
     startIndex: Int,
     length: Int = -1,
-    onCellValid: (Int) -> Unit = {}
+    onCellValid: (CellContents, Int) -> Unit
 ): Boolean {
     val endIndex =
         if (length < 0) {
@@ -237,7 +248,7 @@ private fun validateSection(
         if (lineData[index] == contradiction) {
             isValid = false
         } else {
-            onCellValid(index)
+            onCellValid(contents, index)
         }
         index++
     }
