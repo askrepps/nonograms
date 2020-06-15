@@ -156,9 +156,17 @@ private fun DIV.addButtons() {
     }
     input {
         type = InputType.button
-        value = "Puzzle 2 (no unique solution)"
+        value = "Puzzle 2 (requires multi-line reasoning)"
+        style = "margin-right: 10px;"
         onClickFunction = {
             solvePuzzle(2)
+        }
+    }
+    input {
+        type = InputType.button
+        value = "Puzzle 3 (no unique solution)"
+        onClickFunction = {
+            solvePuzzle(3)
         }
     }
 }
@@ -237,6 +245,22 @@ fun solvePuzzle(puzzleId: Int) {
                     listOf(3, 1),
                     listOf(1),
                     listOf(0)
+                )
+            )
+            3 -> PuzzleDefinition(
+                rows = 4,
+                columns = 4,
+                rowHints = listOf(
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1)
+                ),
+                columnHints = listOf(
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1),
+                    listOf(1, 1)
                 )
             )
             else -> throw IllegalArgumentException("Unknown puzzle ID $puzzleId")
