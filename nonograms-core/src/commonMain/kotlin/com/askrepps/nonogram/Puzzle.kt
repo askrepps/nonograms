@@ -148,7 +148,7 @@ open class PuzzleState(rows: Int, columns: Int) : GridDefinition(rows, columns) 
         require(col in columnIndices) { "Invalid column index ($col), must be from $columnIndices" }
     }
 
-    protected fun getCellIndex(row: Int, col: Int) = getCellIndex(row, col, columns)
+    internal fun getCellIndex(row: Int, col: Int) = getCellIndex(row, col, columns)
 }
 
 /**

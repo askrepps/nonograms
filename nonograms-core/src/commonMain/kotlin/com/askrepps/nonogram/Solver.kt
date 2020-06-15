@@ -25,6 +25,7 @@
 package com.askrepps.nonogram
 
 import com.askrepps.nonogram.internal.HintSpacingGenerator
+import com.askrepps.nonogram.internal.IndexSelectionGenerator
 import com.askrepps.nonogram.internal.addTo
 
 /**
@@ -37,7 +38,7 @@ fun PuzzleDefinition.solve(): PuzzleState {
     do {
         var changesMade = state.applySingleLineHints(this)
         if (!state.isFullyMarked()) {
-            if (state.applyHintsMultiLine(this)) {
+            if (state.applyMultiLineHints(this)) {
                 changesMade = true
             }
         }
@@ -173,26 +174,8 @@ internal fun applyHintsToLine(
         }
     }
 
-    // check for contradictions
-    if (validCount == 0) {
-        throw SolverNoSolutionException("Puzzle does not have a solution", null)
-    }
-
-    // apply results
-    var changes = false
-    for (index in lineData.indices) {
-        // fill cells that appear in every valid combination
-        if (counts[index] == validCount && lineData[index] != CellContents.FILLED) {
-            markCell(index, CellContents.FILLED)
-            changes = true
-        }
-        // put x in cells that appear in no valid combinations
-        if (counts[index] == 0 && lineData[index] != CellContents.X) {
-            markCell(index, CellContents.X)
-            changes = true
-        }
-    }
-    return changes
+    // apply results and detect changes
+    return applyCountResults(lineData, counts, validCount, markCell)
 }
 
 private fun validateSpacing(
@@ -260,8 +243,105 @@ private fun validateSection(
  *
  * @return true if changes were made to the puzzle state, false otherwise.
  */
-internal fun MutablePuzzleState.applyHintsMultiLine(puzzle: PuzzleDefinition): Boolean {
-    return false
+internal fun MutablePuzzleState.applyMultiLineHints(puzzle: PuzzleDefinition): Boolean {
+    val allValidRowSpacings = puzzle.rowHints.mapIndexed { row, hints ->
+        HintSpacingGenerator(hints, columns)
+            .filter { spaces -> validateSpacing(getRow(row), hints, spaces) }
+            .toList()
+    }
+
+    // try all valid combinations of spacing between hint values for all rows
+    val counts = IntArray(cells.size) { 0 }
+    var validCount = 0
+    val openLine = List(columns) { CellContents.OPEN }
+    for (selectedSpaces in IndexSelectionGenerator(allValidRowSpacings.map { it.size })) {
+        // generate puzzle state using selected spacings
+        val tempState = MutablePuzzleState(rows, columns) // MutableList(cells.size) { CellContents.OPEN }
+        for (row in rowIndices) {
+            val hints = puzzle.rowHints[row]
+            val spaces = allValidRowSpacings[row][selectedSpaces[row]]
+            validateSpacing(openLine, hints, spaces) { contents, column ->
+                tempState.markCell(row, column, contents)
+            }
+        }
+
+        // validate generated state is consistent with column hints
+        if (columnIndices.all { validateLineData(tempState.getColumn(it), puzzle.columnHints[it]) }) {
+            tempState.cells.forEachIndexed { index, contents ->
+                if (contents == CellContents.FILLED) {
+                    counts[index]++
+                }
+            }
+            validCount++
+        }
+    }
+
+    // apply results and detect changes
+    return applyCountResults(cells, counts, validCount) { index, contents ->
+        cells[index] = contents
+    }
+}
+
+private fun validateLineData(lineData: List<CellContents>, hints: List<Int>): Boolean {
+    // must have at least one hint
+    if (hints.isEmpty()) {
+        return false
+    }
+
+    // validate empty hint
+    if (hints[0] == 0 && lineData.all { it != CellContents.FILLED }) {
+        return true
+    }
+
+    var index = 0
+    for (hint in hints) {
+        if (index < lineData.size) {
+            // find next group of filled cells (if not found, hint is not satisfied)
+            val nextFilled = lineData.subList(index, lineData.size).indexOfFirst { it == CellContents.FILLED }
+            if (nextFilled < 0) {
+                return false
+            }
+            index += nextFilled
+        }
+
+        // validate group of filled cells is exactly the size specified by the hint
+        if (index + hint > lineData.size || lineData.subList(index, index + hint).any { it == CellContents.X }) {
+            return false
+        }
+        if (index + hint < lineData.size && lineData[index + hint] == CellContents.FILLED) {
+            return false
+        }
+
+        index += hint
+    }
+    return true
+}
+
+private fun applyCountResults(
+    cells: List<CellContents>,
+    counts: IntArray,
+    validCount: Int,
+    markCell: (Int, CellContents) -> Unit
+): Boolean {
+    // check for contradictions
+    if (validCount == 0) {
+        throw SolverNoSolutionException("Puzzle does not have a solution", null)
+    }
+
+    var changes = false
+    for (index in cells.indices) {
+        // fill cells that appear in every valid combination
+        if (counts[index] == validCount && cells[index] != CellContents.FILLED) {
+            markCell(index, CellContents.FILLED)
+            changes = true
+        }
+        // put x in cells that appear in no valid combinations
+        if (counts[index] == 0 && cells[index] != CellContents.X) {
+            markCell(index, CellContents.X)
+            changes = true
+        }
+    }
+    return changes
 }
 
 private fun PuzzleState.isFullyMarked(): Boolean = cellGrid.all { row -> row.all { it != CellContents.OPEN } }
