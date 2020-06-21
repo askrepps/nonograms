@@ -46,38 +46,39 @@ private fun clearPage() {
     }
 }
 
-private fun renderErrorPage(puzzleDefinition: PuzzleDefinition, e: SolverException) {
+private fun renderPage(pageCreator: DIV.() -> Unit) {
     clearPage()
     document.body!!.append.div {
-        addTitle()
-        addButtons()
-        e.state?.let { state ->
-            br
-            br
-            addSolutionTable(puzzleDefinition, state)
-        }
-        p {
-            style = "color: red;"
-            +(e.message ?: "Unknown error occurred")
-        }
-        br
-        br
-        addFooter()
+        pageCreator()
     }
 }
 
-private fun renderSolutionPage(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) {
-    clearPage()
-    document.body!!.append.div {
-        addTitle()
-        addButtons()
+private fun renderErrorPage(puzzleDefinition: PuzzleDefinition, e: SolverException) = renderPage {
+    addTitle()
+    addButtons()
+    e.state?.let { state ->
         br
         br
-        addSolutionTable(puzzleDefinition, solution)
-        br
-        br
-        addFooter()
+        addSolutionTable(puzzleDefinition, state)
     }
+    p {
+        style = "color: red;"
+        +(e.message ?: "Unknown error occurred")
+    }
+    br
+    br
+    addFooter()
+}
+
+private fun renderSolutionPage(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) = renderPage {
+    addTitle()
+    addButtons()
+    br
+    br
+    addSolutionTable(puzzleDefinition, solution)
+    br
+    br
+    addFooter()
 }
 
 private fun DIV.addTitle() {
