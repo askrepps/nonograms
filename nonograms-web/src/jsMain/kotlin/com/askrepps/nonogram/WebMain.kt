@@ -53,29 +53,22 @@ private fun renderPage(pageCreator: DIV.() -> Unit) {
     }
 }
 
-private fun renderErrorPage(puzzleDefinition: PuzzleDefinition, e: SolverException) = renderPage {
-    addTitle()
-    addButtons()
-    e.state?.let { state ->
-        br
-        br
-        addSolutionTable(puzzleDefinition, state)
-    }
-    p {
-        style = "color: red;"
-        +(e.message ?: "Unknown error occurred")
-    }
-    br
-    br
-    addFooter()
-}
-
-private fun renderSolutionPage(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) = renderPage {
+private fun renderResultPage(
+    puzzleDefinition: PuzzleDefinition,
+    state: PuzzleState?,
+    e: SolverException? = null
+) = renderPage {
     addTitle()
     addButtons()
     br
     br
-    addSolutionTable(puzzleDefinition, solution)
+    addResultsTable(puzzleDefinition, state)
+    if (e != null) {
+        p {
+            style = "color: red;"
+            +(e.message ?: "Unknown error occurred")
+        }
+    }
     br
     br
     addFooter()
@@ -87,10 +80,11 @@ private fun DIV.addTitle() {
     }
 }
 
-private fun DIV.addSolutionTable(puzzleDefinition: PuzzleDefinition, solution: PuzzleState) {
+private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: PuzzleState?) {
+    val state = results ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
     val hintTableRows = puzzleDefinition.columnHints.maxBy { it.size }?.size ?: 0
     val hintTableColumns = puzzleDefinition.rowHints.maxBy { it.size }?.size ?: 0
-    val totalTableColumns = solution.columns + hintTableColumns
+    val totalTableColumns = state.columns + hintTableColumns
 
     table {
         style = "border-collapse: collapse;"
@@ -114,7 +108,7 @@ private fun DIV.addSolutionTable(puzzleDefinition: PuzzleDefinition, solution: P
                 }
             }
         }
-        for (puzzleRow in solution.rowIndices) {
+        for (puzzleRow in state.rowIndices) {
             tr {
                 for (column in 0 until totalTableColumns) {
                     td {
@@ -129,7 +123,7 @@ private fun DIV.addSolutionTable(puzzleDefinition: PuzzleDefinition, solution: P
                         } else {
                             style = "border: 1px solid black;"
                             val puzzleColumn = column - hintTableColumns
-                            +solution.getCell(puzzleRow, puzzleColumn).printedSymbol()
+                            +state.getCell(puzzleRow, puzzleColumn).printedSymbol()
                         }
                     }
                 }
@@ -269,9 +263,9 @@ fun solvePuzzle(puzzleId: Int) {
 
     try {
         val solution = puzzleDefinition.solve()
-        renderSolutionPage(puzzleDefinition, solution)
+        renderResultPage(puzzleDefinition, solution)
     } catch (e: SolverException) {
-        renderErrorPage(puzzleDefinition, e)
+        renderResultPage(puzzleDefinition, e.state, e)
     }
 }
 
