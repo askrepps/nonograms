@@ -218,6 +218,8 @@ private fun solveEnteredPuzzle() {
         puzzle = PuzzleDefinition(numRows, numCols, rowHints, columnHints)
         state = puzzle.solve()
         renderSolverPage(puzzle, state)
+    } catch (e: SolverException) {
+        renderSolverPage(puzzle, e.state, e)
     } catch (e: Exception) {
         renderSolverPage(puzzle, state, e)
     }
