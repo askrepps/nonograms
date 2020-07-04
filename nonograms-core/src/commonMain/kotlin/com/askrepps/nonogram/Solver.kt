@@ -256,7 +256,7 @@ internal fun MutablePuzzleState.applyMultiLineHints(puzzle: PuzzleDefinition): B
     val openLine = List(columns) { CellContents.OPEN }
     for (selectedSpaces in IndexSelectionGenerator(allValidRowSpacings.map { it.size })) {
         // generate puzzle state using selected spacings
-        val tempState = MutablePuzzleState(rows, columns) // MutableList(cells.size) { CellContents.OPEN }
+        val tempState = MutablePuzzleState(rows, columns)
         for (row in rowIndices) {
             val hints = puzzle.rowHints[row]
             val spaces = allValidRowSpacings[row][selectedSpaces[row]]
