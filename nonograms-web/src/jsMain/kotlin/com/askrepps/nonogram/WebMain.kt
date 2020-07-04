@@ -146,23 +146,25 @@ private fun renderSolverPage(
     addFooter()
 }
 
-private fun parseHintInput(input: String, label: String) = input.split('\n')
-    .filter { !it.isBlank() }
-    .map { line ->
-        line.split("\\s+".toRegex()).map {
-            it.toIntOrNull()
-                ?: throw Exception("$label do not contain lines of valid space-separated numbers")
-        }
-    }.ifEmpty {
-        throw Exception("$label do not contain lines of valid space-separated numbers")
-    }
+private fun parseHintInput(input: String, label: String): List<List<Int>> {
+    val fail: () -> Nothing = { throw Exception("$label do not contain lines of valid space-separated numbers") }
+    return input.split('\n')
+        .filter { !it.isBlank() }
+        .map { line ->
+            line.split("\\s+".toRegex())
+                .filter { !it.isBlank() }
+                .map {
+                    it.trim().toIntOrNull() ?: fail()
+                }
+        }.ifEmpty { fail() }
+}
 
 private fun solveEnteredPuzzle() {
     var puzzle: PuzzleDefinition? = null
     var state: PuzzleState? = null
     try {
-        val numRows = rowsInput.toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
-        val numCols = columnsInput.toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
+        val numRows = rowsInput.trim().toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
+        val numCols = columnsInput.trim().toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
         val rowHints = parseHintInput(rowHintsInput, "Row hints")
         val columnHints = parseHintInput(columnHintsInput, "Column hints")
 
