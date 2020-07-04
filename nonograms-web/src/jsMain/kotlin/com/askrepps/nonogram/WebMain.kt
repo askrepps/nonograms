@@ -28,7 +28,11 @@ import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onInputFunction
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
+import org.w3c.dom.events.Event
 import kotlin.browser.document
 
 private fun CellContents.printedSymbol() =
@@ -53,25 +57,121 @@ private fun renderPage(pageCreator: DIV.() -> Unit) {
     }
 }
 
-private fun renderResultPage(
-    puzzleDefinition: PuzzleDefinition,
-    state: PuzzleState?,
-    e: SolverException? = null
-) = renderPage {
+var rowsInput = ""
+var columnsInput = ""
+var rowHintsInput = ""
+var columnHintsInput = ""
+
+private val Event.inputValue
+    get() = when (val t = target) {
+        is HTMLInputElement -> t.value
+        is HTMLTextAreaElement -> t.value
+        else -> throw IllegalArgumentException("Unhandled target tag type: ${target?.let { it::class.simpleName} }")
+    }
+
+private fun renderSolverPage(
+    puzzleDefinition: PuzzleDefinition? = null,
+    state: PuzzleState? = null,
+    error: Exception? = null
+): Unit = renderPage {
     addTitle()
-    addButtons()
     br
     br
-    addResultsTable(puzzleDefinition, state)
-    if (e != null) {
+    p {
+        +"Number of rows:"
+    }
+    input {
+        type = InputType.text
+        value = rowsInput
+        onInputFunction = {
+            rowsInput = it.inputValue
+        }
+    }
+    br
+    p {
+        +"Number of columns:"
+    }
+    input {
+        type = InputType.text
+        value = columnsInput
+        onInputFunction = {
+            columnsInput = it.inputValue
+        }
+    }
+    br
+    p {
+        +"Row hints (1 row of space-separated hints per line)"
+    }
+    textArea(rows = "10", cols = "10") {
+        +rowHintsInput
+        onInputFunction = {
+            rowHintsInput = it.inputValue
+        }
+    }
+    br
+    p {
+        +"Column hints (1 column of space-separated hints per line)"
+    }
+    textArea(rows = "10", cols = "10") {
+        +columnHintsInput
+        onInputFunction = {
+            columnHintsInput = it.inputValue
+        }
+    }
+    br
+    br
+    input {
+        type = InputType.button
+        value = "Solve"
+        onClickFunction = {
+            solveEnteredPuzzle()
+        }
+    }
+
+    if (puzzleDefinition != null) {
+        br
+        br
+        addResultsTable(puzzleDefinition, state)
+    }
+    if (error != null) {
+        br
+        br
         p {
             style = "color: red;"
-            +(e.message ?: "Unknown error occurred")
+            +(error.message ?: "Unknown error occurred")
         }
     }
     br
     br
     addFooter()
+}
+
+private fun parseHintInput(input: String, label: String) = input.split('\n')
+    .filter { !it.isBlank() }
+    .map { line ->
+        line.split("\\s+".toRegex()).map {
+            it.toIntOrNull()
+                ?: throw Exception("$label do not contain lines of valid space-separated numbers")
+        }
+    }.ifEmpty {
+        throw Exception("$label do not contain lines of valid space-separated numbers")
+    }
+
+private fun solveEnteredPuzzle() {
+    var puzzle: PuzzleDefinition? = null
+    var state: PuzzleState? = null
+    try {
+        val numRows = rowsInput.toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
+        val numCols = columnsInput.toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
+        val rowHints = parseHintInput(rowHintsInput, "Row hints")
+        val columnHints = parseHintInput(columnHintsInput, "Column hints")
+
+        puzzle = PuzzleDefinition(numRows, numCols, rowHints, columnHints)
+        state = puzzle.solve()
+        renderSolverPage(puzzle, state)
+    } catch (e: Exception) {
+        renderSolverPage(puzzle, state, e)
+    }
 }
 
 private fun DIV.addTitle() {
@@ -132,40 +232,6 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: Puz
     }
 }
 
-private fun DIV.addButtons() {
-    input {
-        type = InputType.button
-        value = "Puzzle 0"
-        style = "margin-right: 10px;"
-        onClickFunction = {
-            solvePuzzle(0)
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Puzzle 1"
-        style = "margin-right: 10px;"
-        onClickFunction = {
-            solvePuzzle(1)
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Puzzle 2 (requires multi-line reasoning)"
-        style = "margin-right: 10px;"
-        onClickFunction = {
-            solvePuzzle(2)
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Puzzle 3 (no unique solution)"
-        onClickFunction = {
-            solvePuzzle(3)
-        }
-    }
-}
-
 private fun DIV.addFooter() {
     a {
         href = "3RD-PARTY-LICENSES.txt"
@@ -173,102 +239,6 @@ private fun DIV.addFooter() {
     }
 }
 
-fun solvePuzzle(puzzleId: Int) {
-    val puzzleDefinition =
-        when (puzzleId) {
-            0 -> PuzzleDefinition(
-                rows = 8,
-                columns = 8,
-                rowHints = listOf(
-                    listOf(0),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(0),
-                    listOf(0),
-                    listOf(6),
-                    listOf(0)
-                ),
-                columnHints = listOf(
-                    listOf(0),
-                    listOf(1),
-                    listOf(3, 1),
-                    listOf(1),
-                    listOf(1),
-                    listOf(3, 1),
-                    listOf(1),
-                    listOf(0)
-                )
-            )
-            1 -> PuzzleDefinition(
-                rows = 5,
-                columns = 5,
-                rowHints = listOf(
-                    listOf(5),
-                    listOf(3),
-                    listOf(3, 1),
-                    listOf(4),
-                    listOf(0)
-                ),
-                columnHints = listOf(
-                    listOf(1, 1),
-                    listOf(4),
-                    listOf(4),
-                    listOf(2, 1),
-                    listOf(1, 2)
-                )
-            )
-            2 -> PuzzleDefinition(
-                rows = 8,
-                columns = 8,
-                rowHints = listOf(
-                    listOf(0),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(0),
-                    listOf(1, 1),
-                    listOf(4),
-                    listOf(0)
-                ),
-                columnHints = listOf(
-                    listOf(0),
-                    listOf(1),
-                    listOf(3, 1),
-                    listOf(1),
-                    listOf(1),
-                    listOf(3, 1),
-                    listOf(1),
-                    listOf(0)
-                )
-            )
-            3 -> PuzzleDefinition(
-                rows = 4,
-                columns = 4,
-                rowHints = listOf(
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1)
-                ),
-                columnHints = listOf(
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1),
-                    listOf(1, 1)
-                )
-            )
-            else -> throw IllegalArgumentException("Unknown puzzle ID $puzzleId")
-        }
-
-    try {
-        val solution = puzzleDefinition.solve()
-        renderResultPage(puzzleDefinition, solution)
-    } catch (e: SolverException) {
-        renderResultPage(puzzleDefinition, e.state, e)
-    }
-}
-
 fun main() {
-    solvePuzzle(0)
+    renderSolverPage()
 }
