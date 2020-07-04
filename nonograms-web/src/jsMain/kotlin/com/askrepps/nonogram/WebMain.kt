@@ -57,10 +57,33 @@ private fun renderPage(pageCreator: DIV.() -> Unit) {
     }
 }
 
-var rowsInput = ""
-var columnsInput = ""
-var rowHintsInput = ""
-var columnHintsInput = ""
+const val EXAMPLE_ROWS_INPUT = "8"
+const val EXAMPLE_COLUMNS_INPUT = "8"
+val EXAMPLE_ROW_HINTS_INPUT = """
+    |0
+    |1 1
+    |1 1
+    |1 1
+    |0
+    |1 1
+    |4
+    |0
+""".trimMargin()
+val EXAMPLE_COLUMN_HINTS_INPUT = """
+    |0
+    |1
+    |3 1
+    |1
+    |1
+    |3 1
+    |1
+    |0
+""".trimMargin()
+
+private var rowsInput = EXAMPLE_ROWS_INPUT
+private var columnsInput = EXAMPLE_COLUMNS_INPUT
+private var rowHintsInput = EXAMPLE_ROW_HINTS_INPUT
+private var columnHintsInput = EXAMPLE_COLUMN_HINTS_INPUT
 
 private val Event.inputValue
     get() = when (val t = target) {
@@ -123,11 +146,35 @@ private fun renderSolverPage(
     input {
         type = InputType.button
         value = "Solve"
+        style = "margin-right: 10px"
         onClickFunction = {
             solveEnteredPuzzle()
         }
     }
-
+    input {
+        type = InputType.button
+        value = "Clear"
+        style = "margin-right: 10px"
+        onClickFunction = {
+            rowsInput = ""
+            columnsInput = ""
+            rowHintsInput = ""
+            columnHintsInput = ""
+            renderSolverPage()
+        }
+    }
+    input {
+        type = InputType.button
+        value = "Example"
+        style = "margin-right: 10px"
+        onClickFunction = {
+            rowsInput = EXAMPLE_ROWS_INPUT
+            columnsInput = EXAMPLE_COLUMNS_INPUT
+            rowHintsInput = EXAMPLE_ROW_HINTS_INPUT
+            columnHintsInput = EXAMPLE_COLUMN_HINTS_INPUT
+            renderSolverPage()
+        }
+    }
     if (puzzleDefinition != null) {
         br
         br
