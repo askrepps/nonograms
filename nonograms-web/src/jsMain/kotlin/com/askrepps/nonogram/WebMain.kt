@@ -35,11 +35,11 @@ import org.w3c.dom.asList
 import org.w3c.dom.events.Event
 import kotlin.browser.document
 
-private fun CellContents.printedSymbol() =
-    when (this) {
-        CellContents.OPEN -> " "
-        CellContents.FILLED -> "■"
-        CellContents.X -> "x"
+private val CellContents.symbolImage
+    get() = when (this) {
+        CellContents.OPEN -> "open.png"
+        CellContents.FILLED -> "fill.png"
+        CellContents.X -> "x.png"
     }
 
 private fun clearPage() {
@@ -231,6 +231,8 @@ private fun DIV.addTitle() {
     }
 }
 
+private const val HINT_CELL_STYLE = "text-align: center; vertical-align: middle; min-width: 21px; min-height: 21px;"
+
 private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: PuzzleState?) {
     val state = results ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
     val hintTableRows = puzzleDefinition.columnHints.maxBy { it.size }?.size ?: 0
@@ -243,6 +245,7 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: Puz
             tr {
                 for (column in 0 until totalTableColumns) {
                     td {
+                        style = HINT_CELL_STYLE
                         val hintColumnIndex = column - hintTableColumns
                         if (hintColumnIndex in puzzleDefinition.columnHints.indices) {
                             val hints = puzzleDefinition.columnHints[hintColumnIndex]
@@ -263,6 +266,7 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: Puz
             tr {
                 for (column in 0 until totalTableColumns) {
                     td {
+                        style = HINT_CELL_STYLE
                         if (column < hintTableColumns) {
                             val hints = puzzleDefinition.rowHints[puzzleRow]
                             val hintIndex = hints.size - hintTableColumns + column
@@ -274,7 +278,10 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: Puz
                         } else {
                             style = "border: 1px solid black;"
                             val puzzleColumn = column - hintTableColumns
-                            +state.getCell(puzzleRow, puzzleColumn).printedSymbol()
+                            img {
+                                style = "vertical-align: middle;"
+                                src = state.getCell(puzzleRow, puzzleColumn).symbolImage
+                            }
                         }
                     }
                 }
