@@ -36,82 +36,70 @@ import kotlin.test.*
 class HintLengthTest {
     @Test
     fun testSingleHintLength() {
-        assertEquals(0, performGetTotalHintLength(listOf(0)))
-        assertEquals(1, performGetTotalHintLength(listOf(1)))
+        assertEquals(0, listOf(0).totalHintLength)
+        assertEquals(1, listOf(1).totalHintLength)
     }
 
     @Test
     fun testMultipleHintsLength() {
-        assertEquals(3, performGetTotalHintLength(listOf(1, 1)))
-        assertEquals(4, performGetTotalHintLength(listOf(2, 1)))
-        assertEquals(5, performGetTotalHintLength(listOf(1, 3)))
-        assertEquals(5, performGetTotalHintLength(listOf(1, 1, 1)))
-        assertEquals(15, performGetTotalHintLength(listOf(1, 2, 5, 2, 1)))
+        assertEquals(3, listOf(1, 1).totalHintLength)
+        assertEquals(4, listOf(2, 1).totalHintLength)
+        assertEquals(5, listOf(1, 3).totalHintLength)
+        assertEquals(5, listOf(1, 1, 1).totalHintLength)
+        assertEquals(15, listOf(1, 2, 5, 2, 1).totalHintLength)
     }
 
     @Test
     fun testSingleHintExactFit() {
-        assertTrue(performGetHintsFitWithin(listOf(0), 0))
-        assertTrue(performGetHintsFitWithin(listOf(1), 1))
-        assertTrue(performGetHintsFitWithin(listOf(5), 5))
+        assertTrue(listOf(0).hintsFitWithin(0))
+        assertTrue(listOf(1).hintsFitWithin(1))
+        assertTrue(listOf(5).hintsFitWithin(5))
     }
 
     @Test
     fun testSingleHintSubsetFit() {
-        assertTrue(performGetHintsFitWithin(listOf(0), 1))
-        assertTrue(performGetHintsFitWithin(listOf(1), 3))
-        assertTrue(performGetHintsFitWithin(listOf(5), 8))
+        assertTrue(listOf(0).hintsFitWithin(1))
+        assertTrue(listOf(1).hintsFitWithin(3))
+        assertTrue(listOf(5).hintsFitWithin(8))
     }
 
     @Test
     fun testSingleHintDoesNotFit() {
-        assertFalse(performGetHintsFitWithin(listOf(1), 0))
-        assertFalse(performGetHintsFitWithin(listOf(5), 4))
-        assertFalse(performGetHintsFitWithin(listOf(5), 1))
+        assertFalse(listOf(1).hintsFitWithin(0))
+        assertFalse(listOf(5).hintsFitWithin(4))
+        assertFalse(listOf(5).hintsFitWithin(1))
     }
 
     @Test
     fun testMultipleHintsExactFit() {
-        assertTrue(performGetHintsFitWithin(listOf(1, 1), 3))
-        assertTrue(performGetHintsFitWithin(listOf(1, 2), 4))
-        assertTrue(performGetHintsFitWithin(listOf(3, 1), 5))
-        assertTrue(performGetHintsFitWithin(listOf(1, 1, 1), 5))
-        assertTrue(performGetHintsFitWithin(listOf(1, 2, 5, 2, 1), 15))
+        assertTrue(listOf(1, 1).hintsFitWithin(3))
+        assertTrue(listOf(1, 2).hintsFitWithin(4))
+        assertTrue(listOf(3, 1).hintsFitWithin(5))
+        assertTrue(listOf(1, 1, 1).hintsFitWithin(5))
+        assertTrue(listOf(1, 2, 5, 2, 1).hintsFitWithin(15))
     }
 
     @Test
     fun testMultipleHintsSubsetFit() {
-        assertTrue(performGetHintsFitWithin(listOf(1, 1), 5))
-        assertTrue(performGetHintsFitWithin(listOf(1, 2), 8))
-        assertTrue(performGetHintsFitWithin(listOf(3, 1), 10))
-        assertTrue(performGetHintsFitWithin(listOf(1, 1, 1), 10))
-        assertTrue(performGetHintsFitWithin(listOf(1, 2, 5, 2, 1), 20))
+        assertTrue(listOf(1, 1).hintsFitWithin(5))
+        assertTrue(listOf(1, 2).hintsFitWithin(8))
+        assertTrue(listOf(3, 1).hintsFitWithin(10))
+        assertTrue(listOf(1, 1, 1).hintsFitWithin(10))
+        assertTrue(listOf(1, 2, 5, 2, 1).hintsFitWithin(20))
     }
 
     @Test
     fun testMultipleHintsDoNotFit() {
-        assertFalse(performGetHintsFitWithin(listOf(1, 1), 2))
-        assertFalse(performGetHintsFitWithin(listOf(1, 2), 2))
-        assertFalse(performGetHintsFitWithin(listOf(3, 1), 4))
-        assertFalse(performGetHintsFitWithin(listOf(1, 1, 1), 3))
-        assertFalse(performGetHintsFitWithin(listOf(1, 2, 5, 2, 1), 10))
+        assertFalse(listOf(1, 1).hintsFitWithin(2))
+        assertFalse(listOf(1, 2).hintsFitWithin(2))
+        assertFalse(listOf(3, 1).hintsFitWithin(4))
+        assertFalse(listOf(1, 1, 1).hintsFitWithin(3))
+        assertFalse(listOf(1, 2, 5, 2, 1).hintsFitWithin(10))
     }
 
     @Test
     fun testNegativeLengthThrowsException() {
-        assertFailsWith<IllegalArgumentException> { performGetHintsFitWithin(listOf(0), -1) }
-        assertFailsWith<IllegalArgumentException> { performGetHintsFitWithin(listOf(1, 2), -42) }
+        assertFailsWith<IllegalArgumentException> { listOf(0).hintsFitWithin(-1) }
+        assertFailsWith<IllegalArgumentException> { listOf(1, 2).hintsFitWithin(-42) }
     }
-
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
-    private fun performGetTotalHintLength(hints: List<Int>) =
-        @Suppress("INVISIBLE_MEMBER")
-        hints.totalHintLength
-
-    private fun performGetHintsFitWithin(hints: List<Int>, length: Int) =
-        @Suppress("INVISIBLE_MEMBER")
-        hints.hintsFitWithin(length)
 }

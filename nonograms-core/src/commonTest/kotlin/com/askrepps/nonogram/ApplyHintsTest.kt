@@ -249,18 +249,12 @@ class ApplyHintsTest {
         runNoFurtherChangesTest(line, hints)
     }
 
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
-        @Suppress("INVISIBLE_MEMBER")
         assertTrue(applyHintsToLine(line, hints, line.markCell))
         assertEquals(expectedLine, line)
     }
 
     private fun runNoFurtherChangesTest(line: MutableList<CellContents>, hints: List<Int>) {
-        @Suppress("INVISIBLE_MEMBER")
         assertFalse(applyHintsToLine(line, hints, line.markCell))
     }
 }

@@ -36,21 +36,13 @@ import kotlin.test.assertEquals
 class CellIndexTest {
     @Test
     fun testCellIndex() {
-        assertEquals(0, performGetCellIndex(0, 0, 1))
-        assertEquals(0, performGetCellIndex(0, 0, 4))
-        assertEquals(1, performGetCellIndex(0, 1, 4))
-        assertEquals(4, performGetCellIndex(1, 0, 4))
-        assertEquals(2, performGetCellIndex(0, 2, 4))
-        assertEquals(8, performGetCellIndex(2, 0, 4))
-        assertEquals(9, performGetCellIndex(2, 1, 4))
-        assertEquals(13, performGetCellIndex(2, 3, 5))
+        assertEquals(0, getCellIndex(0, 0, 1))
+        assertEquals(0, getCellIndex(0, 0, 4))
+        assertEquals(1, getCellIndex(0, 1, 4))
+        assertEquals(4, getCellIndex(1, 0, 4))
+        assertEquals(2, getCellIndex(0, 2, 4))
+        assertEquals(8, getCellIndex(2, 0, 4))
+        assertEquals(9, getCellIndex(2, 1, 4))
+        assertEquals(13, getCellIndex(2, 3, 5))
     }
-
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
-    private fun performGetCellIndex(row: Int, col: Int, rowSize: Int) =
-        @Suppress("INVISIBLE_MEMBER")
-        getCellIndex(row, col, rowSize)
 }

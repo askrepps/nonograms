@@ -25,7 +25,8 @@
 package com.askrepps.nonogram.internal
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests for [anyIndexed].
@@ -33,35 +34,24 @@ import kotlin.test.assertEquals
 class AnyIndexedTest {
     @Test
     fun testEmptyListIsFalse() {
-        val list = emptyList<Int>()
-        val predicate = { _: Int, _: Int -> true }
-        val expectedResult = false
-        runAnyIndexedTest(list, predicate, expectedResult)
+        assertFalse(emptyList<Int>().anyIndexed { _: Int, _: Int -> true })
     }
 
     @Test
     fun testAllTrueIsTrue() {
-        val list = listOf(1, 2, 3)
-        val predicate = { _: Int, _: Int -> true }
-        val expectedResult = true
-        runAnyIndexedTest(list, predicate, expectedResult)
+        assertTrue(listOf(1, 2, 3).anyIndexed { _: Int, _: Int -> true })
     }
 
     @Test
     fun testAllFalseIsFalse() {
-        val list = listOf(1, 2, 3)
-        val predicate = { _: Int, _: Int -> false }
-        val expectedResult = false
-        runAnyIndexedTest(list, predicate, expectedResult)
+        assertFalse(listOf(1, 2, 3).anyIndexed { _: Int, _: Int -> false })
     }
 
     @Test
     fun testOneTrueIsTrue() {
         val list = listOf(1, 2, 3)
-        val expectedResult = true
         for (e in list) {
-            val predicate = { _: Int, x: Int -> x == e }
-            runAnyIndexedTest(list, predicate, expectedResult)
+            assertTrue(list.anyIndexed { _: Int, x: Int -> x == e })
         }
     }
 
@@ -70,20 +60,7 @@ class AnyIndexedTest {
         val list1 = listOf(1, 2, 3)
         val list2 = listOf(3, 2, 1)
         val predicate: (Int, Int) -> Boolean = { index, x -> x < index }
-        runAnyIndexedTest(list1, predicate, expectedResult = false)
-        runAnyIndexedTest(list2, predicate, expectedResult = true)
-    }
-
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
-    private fun <T> runAnyIndexedTest(
-        collection: Collection<T>,
-        predicate: (Int, T) -> Boolean,
-        expectedResult: Boolean
-    ) {
-        @Suppress("INVISIBLE_MEMBER")
-        assertEquals(expectedResult, collection.anyIndexed(predicate))
+        assertFalse(list1.anyIndexed(predicate))
+        assertTrue(list2.anyIndexed(predicate))
     }
 }

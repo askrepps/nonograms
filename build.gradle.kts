@@ -23,6 +23,6 @@
  */
 
 plugins {
-    kotlin("multiplatform") version "1.3.72" apply false
+    kotlin("multiplatform") version "1.4.0" apply false
     id("org.jetbrains.dokka") version "0.10.1" apply false
 }

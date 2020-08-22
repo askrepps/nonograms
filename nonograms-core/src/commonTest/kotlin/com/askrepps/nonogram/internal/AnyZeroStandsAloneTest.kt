@@ -25,7 +25,8 @@
 package com.askrepps.nonogram.internal
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests for [anyZeroStandsAlone].
@@ -33,60 +34,51 @@ import kotlin.test.assertEquals
 class AnyZeroStandsAloneTest {
     @Test
     fun testZeroStandsAloneIfNoZero() {
-        runAnyZeroStandsAloneTest(emptyList(), true)
-        runAnyZeroStandsAloneTest(listOf(1), true)
-        runAnyZeroStandsAloneTest(listOf(1, 2, 3), true)
+        assertTrue(emptyList<Int>().anyZeroStandsAlone)
+        assertTrue(listOf(1).anyZeroStandsAlone)
+        assertTrue(listOf(1, 2, 3).anyZeroStandsAlone)
     }
 
     @Test
     fun testZeroStandsAloneIfOneZero() {
-        runAnyZeroStandsAloneTest(listOf(0), true)
+        assertTrue(listOf(0).anyZeroStandsAlone)
     }
 
     @Test
     fun testZeroDoesNotStandAloneIfMultipleZeros() {
-        runAnyZeroStandsAloneTest(listOf(0, 0), false)
-        runAnyZeroStandsAloneTest(listOf(0, 0, 0), false)
+        assertFalse(listOf(0, 0).anyZeroStandsAlone)
+        assertFalse(listOf(0, 0, 0).anyZeroStandsAlone)
     }
 
     @Test
     fun testZeroDoesNotStandAloneIfZeroAndOtherElements() {
-        runAnyZeroStandsAloneTest(listOf(0, 1), false)
-        runAnyZeroStandsAloneTest(listOf(1, 0), false)
-        runAnyZeroStandsAloneTest(listOf(-1, 0), false)
-        runAnyZeroStandsAloneTest(listOf(0, -1), false)
-        runAnyZeroStandsAloneTest(listOf(0, -1, 2), false)
-        runAnyZeroStandsAloneTest(listOf(-1, 0, 2), false)
-        runAnyZeroStandsAloneTest(listOf(-1, 2, 0), false)
+        assertFalse(listOf(0, 1).anyZeroStandsAlone)
+        assertFalse(listOf(1, 0).anyZeroStandsAlone)
+        assertFalse(listOf(-1, 0).anyZeroStandsAlone)
+        assertFalse(listOf(0, -1).anyZeroStandsAlone)
+        assertFalse(listOf(0, -1, 2).anyZeroStandsAlone)
+        assertFalse(listOf(-1, 0, 2).anyZeroStandsAlone)
+        assertFalse(listOf(-1, 2, 0).anyZeroStandsAlone)
     }
 
     @Test
     fun testZeroStandsAloneInOtherCollectionTypes() {
-        runAnyZeroStandsAloneTest(emptySet(), true)
-        runAnyZeroStandsAloneTest(setOf(1), true)
-        runAnyZeroStandsAloneTest(setOf(1, 2, 3), true)
-        runAnyZeroStandsAloneTest(setOf(0), true)
-        runAnyZeroStandsAloneTest(setOf(0, 0), true)
-        runAnyZeroStandsAloneTest(setOf(0, 0, 0), true)
+        assertTrue(emptySet<Int>().anyZeroStandsAlone)
+        assertTrue(setOf(1).anyZeroStandsAlone)
+        assertTrue(setOf(1, 2, 3).anyZeroStandsAlone)
+        assertTrue(setOf(0).anyZeroStandsAlone)
+        assertTrue(setOf(0, 0).anyZeroStandsAlone)
+        assertTrue(setOf(0, 0, 0).anyZeroStandsAlone)
     }
 
     @Test
     fun testZeroDoesNotStandAloneInOtherCollectionTypes() {
-        runAnyZeroStandsAloneTest(setOf(0, 1), false)
-        runAnyZeroStandsAloneTest(setOf(1, 0), false)
-        runAnyZeroStandsAloneTest(setOf(-1, 0), false)
-        runAnyZeroStandsAloneTest(setOf(0, -1), false)
-        runAnyZeroStandsAloneTest(setOf(0, -1, 2), false)
-        runAnyZeroStandsAloneTest(setOf(-1, 0, 2), false)
-        runAnyZeroStandsAloneTest(setOf(-1, 2, 0), false)
-    }
-
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
-    private fun runAnyZeroStandsAloneTest(collection: Collection<Int>, expectedResult: Boolean) {
-        @Suppress("INVISIBLE_MEMBER")
-        assertEquals(expectedResult, collection.anyZeroStandsAlone)
+        assertFalse(setOf(0, 1).anyZeroStandsAlone)
+        assertFalse(setOf(1, 0).anyZeroStandsAlone)
+        assertFalse(setOf(-1, 0).anyZeroStandsAlone)
+        assertFalse(setOf(0, -1).anyZeroStandsAlone)
+        assertFalse(setOf(0, -1, 2).anyZeroStandsAlone)
+        assertFalse(setOf(-1, 0, 2).anyZeroStandsAlone)
+        assertFalse(setOf(-1, 2, 0).anyZeroStandsAlone)
     }
 }

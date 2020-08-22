@@ -33,7 +33,7 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
-import kotlin.browser.document
+import kotlinx.browser.document
 
 private val CellContents.symbolImage
     get() = when (this) {
@@ -235,8 +235,8 @@ private const val HINT_CELL_STYLE = "text-align: center; vertical-align: middle;
 
 private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: PuzzleState?) {
     val state = results ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
-    val hintTableRows = puzzleDefinition.columnHints.maxBy { it.size }?.size ?: 0
-    val hintTableColumns = puzzleDefinition.rowHints.maxBy { it.size }?.size ?: 0
+    val hintTableRows = puzzleDefinition.columnHints.maxByOrNull { it.size }?.size ?: 0
+    val hintTableColumns = puzzleDefinition.rowHints.maxByOrNull { it.size }?.size ?: 0
     val totalTableColumns = state.columns + hintTableColumns
 
     table {

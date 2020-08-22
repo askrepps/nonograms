@@ -42,7 +42,7 @@ internal class HintSpacingIterator(private val hints: List<Int>, private val lin
     private val slack: Int
 
     init {
-        val maxHint = hints.max() ?: 0
+        val maxHint = hints.maxOrNull() ?: 0
         slack =
             if (maxHint > 0) {
                 lineSize - hints.totalHintLength

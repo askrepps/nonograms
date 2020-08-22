@@ -25,7 +25,8 @@
 package com.askrepps.nonogram.internal
 
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests for [allNonnegative].
@@ -33,71 +34,62 @@ import kotlin.test.assertEquals
 class AllNonnegativeTest {
     @Test
     fun testEmptyListAllNonnegative() {
-        runAllNonnegativeTest(emptyList(), true)
+        assertTrue(emptyList<Int>().allNonnegative)
     }
 
     @Test
     fun testSingleZeroValueAllNonnegative() {
-        runAllNonnegativeTest(listOf(0), true)
+        assertTrue(listOf(0).allNonnegative)
     }
 
     @Test
     fun testSinglePositiveValueAllNonnegative() {
-        runAllNonnegativeTest(listOf(1), true)
-        runAllNonnegativeTest(listOf(42), true)
+        assertTrue(listOf(1).allNonnegative)
+        assertTrue(listOf(42).allNonnegative)
     }
 
     @Test
     fun testMultipleNonnegativeValuesAllNonnegative() {
-        runAllNonnegativeTest(listOf(1, 0, 7, 42), true)
+        assertTrue(listOf(1, 0, 7, 42).allNonnegative)
     }
 
     @Test
     fun testSingleNegativeValueNotAllNonnegative() {
-        runAllNonnegativeTest(listOf(-1), false)
-        runAllNonnegativeTest(listOf(-7), false)
+        assertFalse(listOf(-1).allNonnegative)
+        assertFalse(listOf(-7).allNonnegative)
     }
 
     @Test
     fun testOneNegativeValueNotAllNonnegative() {
-        runAllNonnegativeTest(listOf(-1, 0, 7, 42), false)
-        runAllNonnegativeTest(listOf(1, 0, -7, 42), false)
-        runAllNonnegativeTest(listOf(1, 0, 7, -42), false)
+        assertFalse(listOf(-1, 0, 7, 42).allNonnegative)
+        assertFalse(listOf(1, 0, -7, 42).allNonnegative)
+        assertFalse(listOf(1, 0, 7, -42).allNonnegative)
     }
 
     @Test
     fun testAllNegativeValuesNotAllNonnegative() {
-        runAllNonnegativeTest(listOf(-1, -7, -42), false)
+        assertFalse(listOf(-1, -7, -42).allNonnegative)
     }
 
     @Test
     fun testOtherIterableTypesAllNonnegative() {
-        runAllNonnegativeTest(emptySet(), true)
-        runAllNonnegativeTest(setOf(0), true)
-        runAllNonnegativeTest(setOf(1, 0, 7, 42), true)
+        assertTrue(emptySet<Int>().allNonnegative)
+        assertTrue(setOf(0).allNonnegative)
+        assertTrue(setOf(1, 0, 7, 42).allNonnegative)
 
-        runAllNonnegativeTest((0 until 0), true)
-        runAllNonnegativeTest((0..0), true)
-        runAllNonnegativeTest((0..10), true)
+        assertTrue((0 until 0).allNonnegative)
+        assertTrue((0..0).allNonnegative)
+        assertTrue((0..10).allNonnegative)
     }
 
     @Test
     fun testOtherIterableTypesNotAllNonnegative() {
-        runAllNonnegativeTest(setOf(-1), false)
-        runAllNonnegativeTest(setOf(1, 0, -7, 42), false)
-        runAllNonnegativeTest(setOf(-1, -7, -42), false)
+        assertFalse(setOf(-1).allNonnegative)
+        assertFalse(setOf(1, 0, -7, 42).allNonnegative)
+        assertFalse(setOf(-1, -7, -42).allNonnegative)
 
-        runAllNonnegativeTest((-1..-1), false)
-        runAllNonnegativeTest((-1..10), false)
-        runAllNonnegativeTest((-10..-1), false)
-    }
-
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
-    @Suppress("INVISIBLE_MEMBER")
-    private fun runAllNonnegativeTest(iterable: Iterable<Int>, expectedResult: Boolean) {
-        assertEquals(expectedResult, iterable.allNonnegative)
+        assertFalse((-1..-1).allNonnegative)
+        assertFalse((-1..10).allNonnegative)
+        assertFalse((-10..-1).allNonnegative)
     }
 }

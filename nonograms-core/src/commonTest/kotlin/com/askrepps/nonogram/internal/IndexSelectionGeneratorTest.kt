@@ -86,12 +86,7 @@ class IndexSelectionGeneratorTest {
         assertFailsWith<IllegalArgumentException> { generateFullSequence(listOf(0, -1)) }
     }
 
-    // Note: There is an IntelliJ bug causing an erroneous error to appear when accessing internal members declared
-    //       in a main source set from the corresponding test source set even though the gradle build and tests work
-    //       (see https://youtrack.jetbrains.com/issue/KT-38842)
-
     private fun generateFullSequence(lengths: List<Int>) =
-        @Suppress("INVISIBLE_MEMBER")
         IndexSelectionGenerator(lengths).toList()
 
     private fun runSequenceTest(lengths: List<Int>, expectedSequence: List<List<Int>>) {
