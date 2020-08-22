@@ -31,7 +31,7 @@ import com.askrepps.nonogram.internal.addTo
 /**
  * Solve a nonogram puzzle.
  *
- * @throws SolverException if the puzzle could not be solved (i.e. no solution or no unique solution).
+ * @throws SolverException if the puzzle could not be solved (i.e., no solution or no unique solution).
  */
 fun PuzzleDefinition.solve(): PuzzleState {
     val state = MutablePuzzleState(rows, columns)

@@ -24,5 +24,5 @@
 
 plugins {
     kotlin("multiplatform") version "1.4.0" apply false
-    id("org.jetbrains.dokka") version "0.10.1" apply false
+    id("org.jetbrains.dokka") version "1.4.0-rc" apply false
 }
