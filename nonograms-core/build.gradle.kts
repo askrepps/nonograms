@@ -77,9 +77,3 @@ kotlin {
         }
     }
 }
-
-tasks.dokkaHtml.configure {
-    dokkaSourceSets {
-        register("jvmMain")
-    }
-}
