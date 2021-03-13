@@ -43,7 +43,7 @@ kotlin {
         dependencies {
             implementation(project(":nonograms-core"))
             implementation(kotlin("stdlib-js"))
-            implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.2")
         }
     }
     js().compilations["test"].defaultSourceSet {
