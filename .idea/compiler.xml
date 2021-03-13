@@ -11,9 +11,6 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="1.8">
-      <module name="nonograms.nonograms-core.jvmMain" target="1.6" />
-      <module name="nonograms.nonograms-core.jvmTest" target="1.6" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="13" />
   </component>
 </project>
