@@ -33,12 +33,14 @@ import com.askrepps.nonogram.internal.addTo
  *
  * @throws SolverException if the puzzle could not be solved (i.e., no solution or no unique solution).
  */
-fun PuzzleDefinition.solve(): PuzzleState {
+fun PuzzleDefinition.solve(): PuzzleSolution {
     val state = MutablePuzzleState(rows, columns)
+    var requiredMultiLineReasoning = false
     do {
         var changesMade = state.applySingleLineHints(this)
         if (!state.isFullyMarked()) {
             if (state.applyMultiLineHints(this)) {
+                requiredMultiLineReasoning = true
                 changesMade = true
             }
         }
@@ -48,8 +50,13 @@ fun PuzzleDefinition.solve(): PuzzleState {
         throw SolverNoUniqueSolutionException("Puzzle does not have a unique solution", state)
     }
 
-    return state
+    return PuzzleSolution(state, requiredMultiLineReasoning)
 }
+
+/**
+ * The complete or partial puzzle solution produced by the solver algorithm.
+ */
+data class PuzzleSolution(val state: PuzzleState, val requiredMultiLineReasoning: Boolean)
 
 /**
  * Exception indicating the puzzle could not be solved.

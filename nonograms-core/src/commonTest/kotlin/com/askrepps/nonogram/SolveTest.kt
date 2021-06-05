@@ -31,6 +31,8 @@ import com.askrepps.nonogram.internal.createFullPuzzleDefinitionWithDimensions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests for [solve].
@@ -39,32 +41,38 @@ class SolveTest {
     @Test
     fun testSolvePuzzleDimensions() {
         val solution11 = createEmptyPuzzleDefinitionWithDimensions(1, 1).solve()
-        assertEquals(1, solution11.rows)
-        assertEquals(1, solution11.columns)
+        val state11 = solution11.state
+        assertEquals(1, state11.rows)
+        assertEquals(1, state11.columns)
 
         val solution24 = createEmptyPuzzleDefinitionWithDimensions(2, 4).solve()
-        assertEquals(2, solution24.rows)
-        assertEquals(4, solution24.columns)
+        val state24 = solution24.state
+        assertEquals(2, state24.rows)
+        assertEquals(4, state24.columns)
     }
 
     @Test
     fun testSolveEmptyPuzzle() {
         val solution = createEmptyPuzzleDefinitionWithDimensions(2, 3).solve()
-        for (row in solution.rowIndices) {
-            for (col in solution.columnIndices) {
-                assertEquals(X, solution.getCell(row, col))
+        val state = solution.state
+        for (row in state.rowIndices) {
+            for (col in state.columnIndices) {
+                assertEquals(X, state.getCell(row, col))
             }
         }
+        assertFalse(solution.requiredMultiLineReasoning)
     }
 
     @Test
     fun testSolveFullPuzzle() {
         val solution = createFullPuzzleDefinitionWithDimensions(3, 2).solve()
-        for (row in solution.rowIndices) {
-            for (col in solution.columnIndices) {
-                assertEquals(FILLED, solution.getCell(row, col))
+        val state = solution.state
+        for (row in state.rowIndices) {
+            for (col in state.columnIndices) {
+                assertEquals(FILLED, state.getCell(row, col))
             }
         }
+        assertFalse(solution.requiredMultiLineReasoning)
     }
 
     @Test
@@ -76,17 +84,19 @@ class SolveTest {
             columnHints = listOf(listOf(1, 1), listOf(1), listOf(1, 1))
         )
         val solution = puzzle.solve()
-        for (row in solution.rowIndices) {
-            for (col in solution.columnIndices) {
+        val state = solution.state
+        for (row in state.rowIndices) {
+            for (col in state.columnIndices) {
                 val expectedValue =
                     if ((row + col) % 2 == 0) {
                         FILLED
                     } else {
                         X
                     }
-                assertEquals(expectedValue, solution.getCell(row, col))
+                assertEquals(expectedValue, state.getCell(row, col))
             }
         }
+        assertFalse(solution.requiredMultiLineReasoning)
     }
 
     @Test
@@ -140,7 +150,9 @@ class SolveTest {
             listOf(     X,      X,      X,      X,      X)
         )
 
-        assertEquals(expectedSolution, puzzle.solve().cellGrid)
+        val solution = puzzle.solve()
+        assertEquals(expectedSolution, solution.state.cellGrid)
+        assertFalse(solution.requiredMultiLineReasoning)
     }
 
     @Test
@@ -182,6 +194,8 @@ class SolveTest {
             listOf(X,      X,      X,      X,      X,      X,      X, X)
         )
 
-        assertEquals(expectedSolution, puzzle.solve().cellGrid)
+        val solution = puzzle.solve()
+        assertEquals(expectedSolution, solution.state.cellGrid)
+        assertTrue(solution.requiredMultiLineReasoning)
     }
 }

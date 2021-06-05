@@ -24,16 +24,28 @@
 
 package com.askrepps.nonogram
 
-import kotlinx.html.*
+import kotlinx.browser.document
+import kotlinx.html.DIV
+import kotlinx.html.InputType
+import kotlinx.html.a
+import kotlinx.html.br
 import kotlinx.html.dom.append
+import kotlinx.html.h1
+import kotlinx.html.img
+import kotlinx.html.input
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onInputFunction
+import kotlinx.html.p
+import kotlinx.html.style
+import kotlinx.html.table
+import kotlinx.html.td
+import kotlinx.html.textArea
+import kotlinx.html.tr
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
-import kotlinx.browser.document
 
 private val CellContents.symbolImage
     get() = when (this) {
@@ -89,12 +101,12 @@ private val Event.inputValue
     get() = when (val t = target) {
         is HTMLInputElement -> t.value
         is HTMLTextAreaElement -> t.value
-        else -> throw IllegalArgumentException("Unhandled target tag type: ${target?.let { it::class.simpleName} }")
+        else -> throw IllegalArgumentException("Unhandled target tag type: ${target?.let { it::class.simpleName }}")
     }
 
 private fun renderSolverPage(
     puzzleDefinition: PuzzleDefinition? = null,
-    state: PuzzleState? = null,
+    solution: PuzzleSolution? = null,
     error: Exception? = null
 ): Unit = renderPage {
     addTitle()
@@ -178,7 +190,7 @@ private fun renderSolverPage(
     if (puzzleDefinition != null) {
         br
         br
-        addResultsTable(puzzleDefinition, state)
+        addResultsTable(puzzleDefinition, solution)
     }
     if (error != null) {
         br
@@ -196,10 +208,10 @@ private fun renderSolverPage(
 private fun parseHintInput(input: String, label: String): List<List<Int>> {
     val fail: () -> Nothing = { throw Exception("$label do not contain lines of valid space-separated numbers") }
     return input.split('\n')
-        .filter { !it.isBlank() }
+        .filter { it.isNotBlank() }
         .map { line ->
             line.split("\\s+".toRegex())
-                .filter { !it.isBlank() }
+                .filter { it.isNotBlank() }
                 .map {
                     it.trim().toIntOrNull() ?: fail()
                 }
@@ -208,7 +220,7 @@ private fun parseHintInput(input: String, label: String): List<List<Int>> {
 
 private fun solveEnteredPuzzle() {
     var puzzle: PuzzleDefinition? = null
-    var state: PuzzleState? = null
+    var solution: PuzzleSolution? = null
     try {
         val numRows = rowsInput.trim().toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
         val numCols = columnsInput.trim().toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
@@ -216,12 +228,13 @@ private fun solveEnteredPuzzle() {
         val columnHints = parseHintInput(columnHintsInput, "Column hints")
 
         puzzle = PuzzleDefinition(numRows, numCols, rowHints, columnHints)
-        state = puzzle.solve()
-        renderSolverPage(puzzle, state)
+        solution = puzzle.solve()
+        renderSolverPage(puzzle, solution)
     } catch (e: SolverException) {
-        renderSolverPage(puzzle, e.state, e)
+        solution = e.state?.let { PuzzleSolution(it, requiredMultiLineReasoning = false) }
+        renderSolverPage(puzzle, solution, e)
     } catch (e: Exception) {
-        renderSolverPage(puzzle, state, e)
+        renderSolverPage(puzzle, solution, e)
     }
 }
 
@@ -233,8 +246,8 @@ private fun DIV.addTitle() {
 
 private const val HINT_CELL_STYLE = "text-align: center; vertical-align: middle; min-width: 21px; min-height: 21px;"
 
-private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: PuzzleState?) {
-    val state = results ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
+private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: PuzzleSolution?) {
+    val state = solution?.state ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
     val hintTableRows = puzzleDefinition.columnHints.maxByOrNull { it.size }?.size ?: 0
     val hintTableColumns = puzzleDefinition.rowHints.maxByOrNull { it.size }?.size ?: 0
     val totalTableColumns = state.columns + hintTableColumns
@@ -286,6 +299,12 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, results: Puz
                     }
                 }
             }
+        }
+    }
+
+    if (solution?.requiredMultiLineReasoning == true) {
+        p {
+            +"Note: The puzzle required multi-line reasoning to solve"
         }
     }
 }
