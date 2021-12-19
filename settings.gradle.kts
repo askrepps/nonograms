@@ -24,6 +24,4 @@
 
 rootProject.name = "nonograms"
 
-enableFeaturePreview("GRADLE_METADATA")
-
 include("nonograms-core", "nonograms-web")

@@ -29,7 +29,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 group = "com.askrepps"
@@ -38,8 +37,7 @@ version = "1.0-SNAPSHOT"
 kotlin {
     jvm()
     js {
-        browser {
-        }
+        browser()
     }
 
     sourceSets {
