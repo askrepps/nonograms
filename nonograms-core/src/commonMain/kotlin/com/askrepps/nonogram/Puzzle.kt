@@ -77,7 +77,7 @@ class PuzzleDefinition(
         require(rowHints.all { it.anyZeroStandsAlone } && columnHints.all { it.anyZeroStandsAlone }) {
             "Hint values of zero must be the only value in that row or column"
         }
-        require(rowHints.sumBy { it.sum() } == columnHints.sumBy { it.sum() }) {
+        require(rowHints.sumOf { it.sum() } == columnHints.sumOf { it.sum() }) {
             "Puzzle must have the same total squares in row and column hints"
         }
         require(rowHints.all { it.hintsFitWithin(columns) } && columnHints.all { it.hintsFitWithin(rows) }) {
