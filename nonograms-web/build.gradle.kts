@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+
 plugins {
     kotlin("multiplatform")
 }
@@ -31,6 +34,12 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+
+rootProject.plugins.withType(YarnPlugin::class.java) {
+    rootProject.the<NodeJsRootExtension>().apply {
+        versions.webpackDevServer.version = "4.7.4"
+    }
 }
 
 kotlin {
