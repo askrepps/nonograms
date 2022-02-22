@@ -46,6 +46,9 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 private val CellContents.symbolImage
     get() = when (this) {
@@ -62,11 +65,15 @@ private fun clearPage() {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 private fun renderPage(pageCreator: DIV.() -> Unit) {
-    clearPage()
-    document.body!!.append.div {
-        pageCreator()
+    val renderTime = measureTime {
+        clearPage()
+        document.body!!.append.div {
+            pageCreator()
+        }
     }
+    println("Render time: ${renderTime.toDouble(DurationUnit.SECONDS)} seconds")
 }
 
 const val EXAMPLE_ROWS_INPUT = "8"
@@ -218,17 +225,21 @@ private fun parseHintInput(input: String, label: String): List<List<Int>> {
         }.ifEmpty { fail() }
 }
 
+@OptIn(ExperimentalTime::class)
 private fun solveEnteredPuzzle() {
     var puzzle: PuzzleDefinition? = null
     var solution: PuzzleSolution? = null
     try {
-        val numRows = rowsInput.trim().toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
-        val numCols = columnsInput.trim().toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
-        val rowHints = parseHintInput(rowHintsInput, "Row hints")
-        val columnHints = parseHintInput(columnHintsInput, "Column hints")
+        val elapsedTime = measureTime {
+            val numRows = rowsInput.trim().toIntOrNull() ?: throw Exception("Number of rows is not a valid number")
+            val numCols = columnsInput.trim().toIntOrNull() ?: throw Exception("Number of columns is not a valid number")
+            val rowHints = parseHintInput(rowHintsInput, "Row hints")
+            val columnHints = parseHintInput(columnHintsInput, "Column hints")
 
-        puzzle = PuzzleDefinition(numRows, numCols, rowHints, columnHints)
-        solution = puzzle.solve()
+            puzzle = PuzzleDefinition(numRows, numCols, rowHints, columnHints)
+            solution = puzzle?.solve()
+        }
+        println("Solve time: ${elapsedTime.toDouble(DurationUnit.SECONDS)} seconds")
         renderSolverPage(puzzle, solution)
     } catch (e: SolverException) {
         solution = e.state?.let { PuzzleSolution(it, requiredMultiLineReasoning = false) }

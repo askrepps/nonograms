@@ -35,9 +35,10 @@ import com.askrepps.nonogram.internal.addTo
  */
 fun PuzzleDefinition.solve(): PuzzleSolution {
     val state = MutablePuzzleState(rows, columns)
+    val possibleSpacingsCache = generateAllPossibleSpacings()
     var requiredMultiLineReasoning = false
     do {
-        var changesMade = state.applySingleLineHints(this)
+        var changesMade = state.applySingleLineHints(this, possibleSpacingsCache)
         if (!state.isFullyMarked()) {
             if (state.applyMultiLineHints(this)) {
                 requiredMultiLineReasoning = true
@@ -91,23 +92,36 @@ class SolverNoUniqueSolutionException(
 internal enum class RowOrColumn { ROW, COLUMN }
 
 /**
+ * Generate all possible spacings for the puzzle's hints.
+ */
+internal fun PuzzleDefinition.generateAllPossibleSpacings(): List<MutableSet<List<Int>>> {
+    val possibleSpacings = mutableListOf<MutableSet<List<Int>>>()
+    possibleSpacings.addAll(rowHints.map { HintSpacingGenerator(it, columns).toMutableSet() })
+    possibleSpacings.addAll(columnHints.map { HintSpacingGenerator(it, rows).toMutableSet() })
+    return possibleSpacings
+}
+
+/**
  * Run solver algorithm that considers each [puzzle] row and column in isolation.
  *
  * @return true if changes were made to the puzzle state, false otherwise.
  *
  * @throws SolverNoSolutionException if the puzzle has no solution.
  */
-internal fun MutablePuzzleState.applySingleLineHints(puzzle: PuzzleDefinition): Boolean {
+internal fun MutablePuzzleState.applySingleLineHints(
+    puzzle: PuzzleDefinition,
+    spacingsCache: List<MutableSet<List<Int>>>
+): Boolean {
     var anyChangesMade = false
     do {
         var changesMadeThisPass = false
         for (row in rowIndices) {
-            if (applyHints(puzzle, row, RowOrColumn.ROW)) {
+            if (applyHints(puzzle, row, RowOrColumn.ROW, spacingsCache[row])) {
                 changesMadeThisPass = true
             }
         }
         for (col in columnIndices) {
-            if (applyHints(puzzle, col, RowOrColumn.COLUMN)) {
+            if (applyHints(puzzle, col, RowOrColumn.COLUMN, spacingsCache[rows + col])) {
                 changesMadeThisPass = true
             }
         }
@@ -128,17 +142,18 @@ internal fun MutablePuzzleState.applySingleLineHints(puzzle: PuzzleDefinition): 
 internal fun MutablePuzzleState.applyHints(
     puzzle: PuzzleDefinition,
     lineIndex: Int,
-    rowOrColumn: RowOrColumn
+    rowOrColumn: RowOrColumn,
+    spacingsCache: MutableSet<List<Int>>
 ): Boolean {
     try {
         return when (rowOrColumn) {
             RowOrColumn.ROW -> {
-                applyHintsToLine(getRow(lineIndex), puzzle.rowHints[lineIndex]) { col, contents ->
+                applyHintsToLine(getRow(lineIndex), puzzle.rowHints[lineIndex], spacingsCache) { col, contents ->
                     markCell(lineIndex, col, contents)
                 }
             }
             RowOrColumn.COLUMN -> {
-                applyHintsToLine(getColumn(lineIndex), puzzle.columnHints[lineIndex]) { row, contents ->
+                applyHintsToLine(getColumn(lineIndex), puzzle.columnHints[lineIndex], spacingsCache) { row, contents ->
                     markCell(row, lineIndex, contents)
                 }
             }
@@ -159,13 +174,16 @@ internal fun MutablePuzzleState.applyHints(
 internal fun applyHintsToLine(
     lineData: List<CellContents>,
     hints: List<Int>,
-    markCell: (Int, CellContents) -> Unit
+    spacingsCache: MutableSet<List<Int>>? = null,
+    markCell: (Int, CellContents) -> Unit = { _, _ -> }
 ): Boolean {
     // try all valid combinations of spacing between hint values
     val counts = IntArray(lineData.size) { 0 }
     val tempCounts = IntArray(lineData.size) { 0 }
     var validCount = 0
-    for (spaces in HintSpacingGenerator(hints, lineData.size)) {
+    val possibleSpacings = spacingsCache ?: HintSpacingGenerator(hints, lineData.size).toMutableSet()
+    val invalidSpacings = mutableSetOf<List<Int>>()
+    for (spaces in possibleSpacings) {
         tempCounts.fill(0)
         val isValid = validateSpacing(lineData, hints, spaces) { contents, index ->
             // track which cells are successfully filled
@@ -178,8 +196,13 @@ internal fun applyHintsToLine(
             // add valid filled cells to the total counts to track overlap between spacing combinations
             tempCounts.addTo(counts)
             validCount++
+        } else {
+            invalidSpacings.add(spaces)
         }
     }
+
+    // remove spacings that lead to contradictions
+    spacingsCache?.removeAll(invalidSpacings)
 
     // apply results and detect changes
     return applyCountResults(lineData, counts, validCount, markCell)

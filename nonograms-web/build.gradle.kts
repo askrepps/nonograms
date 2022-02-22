@@ -65,4 +65,8 @@ kotlin {
             implementation(kotlin("test-js"))
         }
     }
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.RequiresOptIn")
+    }
 }

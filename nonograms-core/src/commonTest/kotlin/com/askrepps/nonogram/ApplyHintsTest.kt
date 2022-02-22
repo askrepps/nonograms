@@ -250,11 +250,11 @@ class ApplyHintsTest {
     }
 
     private fun runApplyHintTest(line: MutableList<CellContents>, hints: List<Int>, expectedLine: List<CellContents>) {
-        assertTrue(applyHintsToLine(line, hints, line.markCell))
+        assertTrue(applyHintsToLine(line, hints, markCell = line.markCell))
         assertEquals(expectedLine, line)
     }
 
     private fun runNoFurtherChangesTest(line: MutableList<CellContents>, hints: List<Int>) {
-        assertFalse(applyHintsToLine(line, hints, line.markCell))
+        assertFalse(applyHintsToLine(line, hints, markCell = line.markCell))
     }
 }
