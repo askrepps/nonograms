@@ -38,6 +38,7 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onInputFunction
 import kotlinx.html.p
 import kotlinx.html.style
+import kotlinx.html.sub
 import kotlinx.html.table
 import kotlinx.html.td
 import kotlinx.html.textArea
@@ -321,9 +322,19 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
 }
 
 private fun DIV.addFooter() {
-    a {
-        href = "3RD-PARTY-LICENSES.txt"
-        +"Third-Party License Notice"
+    sub {
+        +"Version 1.0.0"
+    }
+    br
+    sub {
+        +"Copyright 2020-2022 © Andrew Krepps"
+    }
+    br
+    sub {
+        a {
+            href = "3RD-PARTY-LICENSES.txt"
+            +"Third-Party License Notice"
+        }
     }
 }
 
