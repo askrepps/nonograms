@@ -66,7 +66,7 @@ class PuzzleStateTest {
 
     private fun testCellGridDimensions(rows: Int, columns: Int) {
         val state = PuzzleState(rows, columns)
-        val grid = state.cellGrid
+        val grid = state.getCellGrid()
         assertEquals(rows, grid.size)
         for (row in grid) {
             assertEquals(columns, row.size)
@@ -76,7 +76,7 @@ class PuzzleStateTest {
     @Test
     fun testCellsInitializedToOpen() {
         val state = PuzzleState(10, 15)
-        val grid = state.cellGrid
+        val grid = state.getCellGrid()
         for (row in state.rowIndices) {
             for (col in state.columnIndices) {
                 assertEquals(OPEN, grid[row][col])
@@ -102,7 +102,7 @@ class PuzzleStateTest {
         state.markCell(1, 2, FILLED)
         state.markCell(3, 4, X)
 
-        val grid = state.cellGrid
+        val grid = state.getCellGrid()
         for (row in state.rowIndices) {
             for (col in state.columnIndices) {
                 val expectedContents = when {

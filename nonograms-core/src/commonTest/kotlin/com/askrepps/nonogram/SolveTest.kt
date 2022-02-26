@@ -151,7 +151,7 @@ class SolveTest {
         )
 
         val solution = puzzle.solve()
-        assertEquals(expectedSolution, solution.state.cellGrid)
+        assertEquals(expectedSolution, solution.state.getCellGrid())
         assertFalse(solution.requiredMultiLineReasoning)
     }
 
@@ -195,7 +195,7 @@ class SolveTest {
         )
 
         val solution = puzzle.solve()
-        assertEquals(expectedSolution, solution.state.cellGrid)
+        assertEquals(expectedSolution, solution.state.getCellGrid())
         assertTrue(solution.requiredMultiLineReasoning)
     }
 }

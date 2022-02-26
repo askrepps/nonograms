@@ -374,4 +374,4 @@ private fun applyCountResults(
     return changes
 }
 
-private fun PuzzleState.isFullyMarked(): Boolean = cellGrid.all { row -> row.all { it != CellContents.OPEN } }
+private fun PuzzleState.isFullyMarked(): Boolean = cells.all { it != CellContents.OPEN }

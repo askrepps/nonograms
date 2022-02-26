@@ -72,7 +72,7 @@ val puzzle = PuzzleDefinition(
 val solution = puzzle.solve()
 
 // access solved puzzle state
-for (row in solution.state.cellGrid) {
+for (row in solution.state.getCellGrid()) {
     println(
         row.joinToString(separator = " ") { cell ->
             when (cell) {

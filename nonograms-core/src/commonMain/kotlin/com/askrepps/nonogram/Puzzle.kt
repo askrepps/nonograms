@@ -100,10 +100,9 @@ open class PuzzleState(rows: Int, columns: Int) : GridDefinition(rows, columns) 
     internal val cells = MutableList(rows * columns) { CellContents.OPEN }
 
     /**
-     * The current contents of all puzzle cells as a 2-D grid stored in row-major order.
+     * Get the current contents of all puzzle cells as a 2-D grid stored in row-major order.
      */
-    val cellGrid: List<List<CellContents>>
-        get() = List(rows) { row -> List(columns) { col -> getCell(row, col) } }
+    fun getCellGrid(): List<List<CellContents>> = rowIndices.map { getRow(it) }
 
     /**
      * Get the contents of a cell located at ([row], [col]).
@@ -122,7 +121,7 @@ open class PuzzleState(rows: Int, columns: Int) : GridDefinition(rows, columns) 
      */
     fun getRow(row: Int): List<CellContents> {
         validateRow(row)
-        return List(columns) { col -> getCell(row, col) }
+        return cells.subList(row * columns, (row + 1) * columns)
     }
 
     /**
