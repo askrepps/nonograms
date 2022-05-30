@@ -98,4 +98,4 @@ X X X X X X X X
 ```
 
 <hr>
-<sub>Copyright 2020-2022 © Andrew Krepps</sub>
+<sub>Copyright © 2020-2022 Andrew Krepps</sub>
