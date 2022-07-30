@@ -25,6 +25,7 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.dokka")
+    id("org.jetbrains.kotlinx.benchmark")
     id("maven-publish")
 }
 
@@ -36,8 +37,13 @@ group = "com.askrepps"
 version = "1.0.0"
 
 kotlin {
-    jvm()
+    jvm {
+        compilations.create("benchmarks")
+    }
     js {
+        nodejs {
+            compilations.create("benchmarks")
+        }
         browser()
     }
 
@@ -53,6 +59,12 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
+        val commonBenchmark by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.4")
+            }
+        }
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
@@ -64,6 +76,9 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+        jvm().compilations["benchmarks"].defaultSourceSet {
+            dependsOn(commonBenchmark)
+        }
         js().compilations["main"].defaultSourceSet {
             dependencies {
                 implementation(kotlin("stdlib-js"))
@@ -74,5 +89,15 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
+        js().compilations["benchmarks"].defaultSourceSet {
+            dependsOn(commonBenchmark)
+        }
+    }
+}
+
+benchmark {
+    targets {
+        register("jvmBenchmarks")
+        register("jsBenchmarks")
     }
 }

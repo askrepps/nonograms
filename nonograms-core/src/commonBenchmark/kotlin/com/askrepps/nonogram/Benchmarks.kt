@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,17 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("multiplatform") version "1.7.10" apply false
-    id("org.jetbrains.dokka") version "1.7.10" apply false
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.4" apply false
+package com.askrepps.nonogram
+
+import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.Scope
+import kotlinx.benchmark.State
+
+@Suppress("unused")
+@State(Scope.Benchmark)
+open class Benchmarks {
+    @Benchmark
+    open fun testBenchmark(): Int {
+        return 2 + 2
+    }
 }
