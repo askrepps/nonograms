@@ -63,6 +63,9 @@ class PuzzleDefinition(
     val rowHints: List<List<Int>>,
     val columnHints: List<List<Int>>
 ) : GridDefinition(rows, columns) {
+    constructor(rowHints: List<List<Int>>, columnHints: List<List<Int>>)
+        : this(rowHints.size, columnHints.size, rowHints, columnHints)
+
     init {
         // validate puzzle definition
         require(rowHints.size == rows && columnHints.size == columns) {

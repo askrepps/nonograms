@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.askrepps:nonograms-core:1.0.0"
+    implementation "com.askrepps:nonograms-core:1.1.0"
 }
 ```
 
@@ -44,8 +44,6 @@ Here is an example showing how to create a puzzle definition and run the solver:
 ```kotlin
 // create puzzle
 val puzzle = PuzzleDefinition(
-    rows = 8,
-    columns = 8,
     rowHints = listOf(
         listOf(0),
         listOf(1, 1),

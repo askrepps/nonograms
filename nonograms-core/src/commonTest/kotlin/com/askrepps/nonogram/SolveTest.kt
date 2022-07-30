@@ -78,8 +78,6 @@ class SolveTest {
     @Test
     fun testSolveOddCheckerboardPuzzle() {
         val puzzle = PuzzleDefinition(
-            rows = 3,
-            columns = 3,
             rowHints = listOf(listOf(1, 1), listOf(1), listOf(1, 1)),
             columnHints = listOf(listOf(1, 1), listOf(1), listOf(1, 1))
         )
@@ -102,8 +100,6 @@ class SolveTest {
     @Test
     fun testEvenCheckerboardPuzzleHasNoUniqueSolution() {
         val puzzle = PuzzleDefinition(
-            rows = 2,
-            columns = 2,
             rowHints = listOf(listOf(1), listOf(1)),
             columnHints = listOf(listOf(1), listOf(1))
         )
@@ -113,8 +109,6 @@ class SolveTest {
     @Test
     fun testImpossiblePuzzleHasNoSolution() {
         val puzzle = PuzzleDefinition(
-            rows = 2,
-            columns = 2,
             rowHints = listOf(listOf(0), listOf(2)),
             columnHints = listOf(listOf(0), listOf(2))
         )
@@ -124,8 +118,6 @@ class SolveTest {
     @Test
     fun testSolve5x5Puzzle() {
         val puzzle = PuzzleDefinition(
-            rows = 5,
-            columns = 5,
             rowHints = listOf(
                 listOf(5),
                 listOf(3),
@@ -158,8 +150,6 @@ class SolveTest {
     @Test
     fun testSolveSmilePuzzle() {
         val puzzle = PuzzleDefinition(
-            rows = 8,
-            columns = 8,
             rowHints = listOf(
                 listOf(0),
                 listOf(1, 1),

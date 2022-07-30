@@ -67,11 +67,9 @@ class PuzzleDefinitionTest {
 
     @Test
     fun testValidHintsDoNotThrowExceptions() {
-        PuzzleDefinition(1, 1, listOf(listOf(1)), listOf(listOf(1)))
-        PuzzleDefinition(2, 2, listOf(listOf(2), listOf(1)), listOf(listOf(1), listOf(2)))
+        PuzzleDefinition(listOf(listOf(1)), listOf(listOf(1)))
+        PuzzleDefinition(listOf(listOf(2), listOf(1)), listOf(listOf(1), listOf(2)))
         PuzzleDefinition(
-            5,
-            5,
             listOf(
                 listOf(5),
                 listOf(3),
@@ -120,52 +118,52 @@ class PuzzleDefinitionTest {
     @Test
     fun testNegativeHintValuesThrowsException() {
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(2), listOf(-1)), listOf(listOf(0), listOf(1)))
+            PuzzleDefinition(listOf(listOf(2), listOf(-1)), listOf(listOf(0), listOf(1)))
         }
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1)))
+            PuzzleDefinition(listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1)))
         }
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(2), listOf(-1, 1, -1)), listOf(listOf(0), listOf(1)))
+            PuzzleDefinition(listOf(listOf(2), listOf(-1, 1, -1)), listOf(listOf(0), listOf(1)))
         }
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1, 1, -1)))
+            PuzzleDefinition(listOf(listOf(0), listOf(1)), listOf(listOf(2), listOf(-1, 1, -1)))
         }
     }
 
     @Test
     fun testHintValueZeroBesideOtherValueThrowsException() {
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(1, 0), listOf(0)), listOf(listOf(1), listOf(0)))
+            PuzzleDefinition(listOf(listOf(1, 0), listOf(0)), listOf(listOf(1), listOf(0)))
         }
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(1), listOf(0)), listOf(listOf(0, 1), listOf(0)))
+            PuzzleDefinition(listOf(listOf(1), listOf(0)), listOf(listOf(0, 1), listOf(0)))
         }
     }
 
     @Test
     fun testInconsistentHintsThrowsException() {
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2)))
+            PuzzleDefinition(listOf(listOf(1), listOf(1)), listOf(listOf(2), listOf(2)))
         }
         assertFailsWith<IllegalArgumentException>{
-            PuzzleDefinition(2, 2, listOf(listOf(2), listOf(2)), listOf(listOf(1), listOf(1)))
+            PuzzleDefinition(listOf(listOf(2), listOf(2)), listOf(listOf(1), listOf(1)))
         }
     }
 
     @Test
     fun testIllFittingHintsThrowsException() {
         assertFailsWith<IllegalArgumentException> {
-            PuzzleDefinition(2, 2, listOf(listOf(3), listOf(0)), listOf(listOf(2), listOf(1)))
+            PuzzleDefinition(listOf(listOf(3), listOf(0)), listOf(listOf(2), listOf(1)))
         }
         assertFailsWith<IllegalArgumentException>{
-            PuzzleDefinition(2, 2, listOf(listOf(2), listOf(0)), listOf(listOf(1, 1), listOf(0)))
+            PuzzleDefinition(listOf(listOf(2), listOf(0)), listOf(listOf(1, 1), listOf(0)))
         }
         assertFailsWith<IllegalArgumentException>{
-            PuzzleDefinition(3, 2, listOf(listOf(3), listOf(0), listOf(0)), listOf(listOf(2), listOf(1)))
+            PuzzleDefinition(listOf(listOf(3), listOf(0), listOf(0)), listOf(listOf(2), listOf(1)))
         }
         assertFailsWith<IllegalArgumentException>{
-            PuzzleDefinition(2, 3, listOf(listOf(2), listOf(1)), listOf(listOf(3), listOf(0), listOf(0)))
+            PuzzleDefinition(listOf(listOf(2), listOf(1)), listOf(listOf(3), listOf(0), listOf(0)))
         }
     }
 }
