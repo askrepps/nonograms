@@ -30,7 +30,6 @@ import kotlinx.html.InputType
 import kotlinx.html.a
 import kotlinx.html.br
 import kotlinx.html.dom.append
-import kotlinx.html.h1
 import kotlinx.html.img
 import kotlinx.html.input
 import kotlinx.html.js.div
@@ -43,6 +42,7 @@ import kotlinx.html.table
 import kotlinx.html.td
 import kotlinx.html.textArea
 import kotlinx.html.tr
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
@@ -50,6 +50,12 @@ import org.w3c.dom.events.Event
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
+
+const val APP_ROOT_ID = "nonogram-solver-root"
+
+val appRoot: HTMLElement by lazy {
+    requireNotNull(document.getElementById(APP_ROOT_ID) as? HTMLElement) { "Element $APP_ROOT_ID not found" }
+}
 
 private val CellContents.symbolImage
     get() = when (this) {
@@ -59,10 +65,8 @@ private val CellContents.symbolImage
     }
 
 private fun clearPage() {
-    document.body?.let { body ->
-        for (child in body.children.asList()) {
-            child.remove()
-        }
+    for (child in appRoot.children.asList()) {
+        child.remove()
     }
 }
 
@@ -70,7 +74,7 @@ private fun clearPage() {
 private fun renderPage(pageCreator: DIV.() -> Unit) {
     val renderTime = measureTime {
         clearPage()
-        document.body!!.append.div {
+        appRoot.append.div {
             pageCreator()
         }
     }
@@ -117,9 +121,6 @@ private fun renderSolverPage(
     solution: PuzzleSolution? = null,
     error: Exception? = null
 ): Unit = renderPage {
-    addTitle()
-    br
-    br
     p {
         +"Number of rows:"
     }
@@ -247,12 +248,6 @@ private fun solveEnteredPuzzle() {
         renderSolverPage(puzzle, solution, e)
     } catch (e: Exception) {
         renderSolverPage(puzzle, solution, e)
-    }
-}
-
-private fun DIV.addTitle() {
-    h1 {
-        +"Nonogram Solver"
     }
 }
 
