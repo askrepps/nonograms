@@ -1,0 +1,78 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2022 Andrew Krepps
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+.nonogram-puzzle-input-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px;
+  padding-left: 0px;
+}
+
+.nonogram-puzzle-input-item {
+  margin: 8px;
+  margin-left: 0px;
+}
+
+.nonogram-puzzle-input-label {
+  margin-top: 0px;
+  margin-bottom: 4px;
+}
+
+.nonogram-action-button {
+  margin-right: 8px;
+}
+
+.nonogram-solution-table {
+  table-layout: fixed;
+  border-spacing: 0px;
+}
+
+.nonogram-solution-table > td {
+  margin: 0px;
+  padding: 1px;
+  background-color: white;
+}
+
+.nonogram-solution-hint-cell {
+  text-align: center;
+  vertical-align: middle;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.nonogram-solution-grid-cell {
+  border: 1px solid black;
+}
+
+.nonogram-solution-grid-cell > img {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.nonogram-error-message {
+  color: red;
+}

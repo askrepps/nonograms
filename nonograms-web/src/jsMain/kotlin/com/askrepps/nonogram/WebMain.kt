@@ -29,6 +29,8 @@ import kotlinx.html.DIV
 import kotlinx.html.InputType
 import kotlinx.html.a
 import kotlinx.html.br
+import kotlinx.html.classes
+import kotlinx.html.div
 import kotlinx.html.dom.append
 import kotlinx.html.img
 import kotlinx.html.input
@@ -36,7 +38,6 @@ import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onInputFunction
 import kotlinx.html.p
-import kotlinx.html.style
 import kotlinx.html.sub
 import kotlinx.html.table
 import kotlinx.html.td
@@ -121,95 +122,114 @@ private fun renderSolverPage(
     solution: PuzzleSolution? = null,
     error: Exception? = null
 ): Unit = renderPage {
+    div {
+        classes = setOf("nonogram-puzzle-input-group")
+        div {
+            classes = setOf("nonogram-puzzle-input-item")
+            p {
+                classes = setOf("nonogram-puzzle-input-label")
+                +"Number of rows:"
+            }
+            input {
+                type = InputType.text
+                value = rowsInput
+                onInputFunction = {
+                    rowsInput = it.inputValue
+                }
+            }
+        }
+        div {
+            classes = setOf("nonogram-puzzle-input-item")
+            p {
+                classes = setOf("nonogram-puzzle-input-label")
+                +"Number of columns:"
+            }
+            input {
+                type = InputType.text
+                value = columnsInput
+                onInputFunction = {
+                    columnsInput = it.inputValue
+                }
+            }
+        }
+    }
     p {
-        +"Number of rows:"
+        +"Enter one row or column of space-separated hints per line"
     }
-    input {
-        type = InputType.text
-        value = rowsInput
-        onInputFunction = {
-            rowsInput = it.inputValue
+    div {
+        classes = setOf("nonogram-puzzle-input-group")
+        div {
+            classes = setOf("nonogram-puzzle-input-item")
+            p {
+                classes = setOf("nonogram-puzzle-input-label")
+                +"Row hints"
+            }
+            textArea(rows = "10", cols = "10") {
+                +rowHintsInput
+                onInputFunction = {
+                    rowHintsInput = it.inputValue
+                }
+            }
+        }
+        div {
+            classes = setOf("nonogram-puzzle-input-item")
+            p {
+                classes = setOf("nonogram-puzzle-input-label")
+                +"Column hints"
+            }
+            textArea(rows = "10", cols = "10") {
+                +columnHintsInput
+                onInputFunction = {
+                    columnHintsInput = it.inputValue
+                }
+            }
         }
     }
-    br
-    p {
-        +"Number of columns:"
-    }
-    input {
-        type = InputType.text
-        value = columnsInput
-        onInputFunction = {
-            columnsInput = it.inputValue
+    div {
+        classes = setOf("nonogram-action-button-group")
+        input {
+            classes = setOf("nonogram-action-button")
+            type = InputType.button
+            value = "Solve"
+            onClickFunction = {
+                solveEnteredPuzzle()
+            }
         }
-    }
-    br
-    p {
-        +"Row hints (1 row of space-separated hints per line)"
-    }
-    textArea(rows = "10", cols = "10") {
-        +rowHintsInput
-        onInputFunction = {
-            rowHintsInput = it.inputValue
+        input {
+            classes = setOf("nonogram-action-button")
+            type = InputType.button
+            value = "Clear"
+            onClickFunction = {
+                rowsInput = ""
+                columnsInput = ""
+                rowHintsInput = ""
+                columnHintsInput = ""
+                renderSolverPage()
+            }
         }
-    }
-    br
-    p {
-        +"Column hints (1 column of space-separated hints per line)"
-    }
-    textArea(rows = "10", cols = "10") {
-        +columnHintsInput
-        onInputFunction = {
-            columnHintsInput = it.inputValue
-        }
-    }
-    br
-    br
-    input {
-        type = InputType.button
-        value = "Solve"
-        style = "margin-right: 10px"
-        onClickFunction = {
-            solveEnteredPuzzle()
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Clear"
-        style = "margin-right: 10px"
-        onClickFunction = {
-            rowsInput = ""
-            columnsInput = ""
-            rowHintsInput = ""
-            columnHintsInput = ""
-            renderSolverPage()
-        }
-    }
-    input {
-        type = InputType.button
-        value = "Example"
-        style = "margin-right: 10px"
-        onClickFunction = {
-            rowsInput = EXAMPLE_ROWS_INPUT
-            columnsInput = EXAMPLE_COLUMNS_INPUT
-            rowHintsInput = EXAMPLE_ROW_HINTS_INPUT
-            columnHintsInput = EXAMPLE_COLUMN_HINTS_INPUT
-            renderSolverPage()
+        input {
+            classes = setOf("nonogram-action-button")
+            type = InputType.button
+            value = "Example"
+            onClickFunction = {
+                rowsInput = EXAMPLE_ROWS_INPUT
+                columnsInput = EXAMPLE_COLUMNS_INPUT
+                rowHintsInput = EXAMPLE_ROW_HINTS_INPUT
+                columnHintsInput = EXAMPLE_COLUMN_HINTS_INPUT
+                renderSolverPage()
+            }
         }
     }
     if (puzzleDefinition != null) {
         br
-        br
         addResultsTable(puzzleDefinition, solution)
     }
     if (error != null) {
-        br
-        br
         p {
-            style = "color: red;"
+            classes = setOf("nonogram-error-message")
             +(error.message ?: "Unknown error occurred")
         }
     }
-    br
     br
     addFooter()
 }
@@ -251,8 +271,6 @@ private fun solveEnteredPuzzle() {
     }
 }
 
-private const val HINT_CELL_STYLE = "text-align: center; vertical-align: middle; min-width: 21px; min-height: 21px;"
-
 private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: PuzzleSolution?) {
     val state = solution?.state ?: PuzzleState(puzzleDefinition.rows, puzzleDefinition.columns)
     val hintTableRows = puzzleDefinition.columnHints.maxByOrNull { it.size }?.size ?: 0
@@ -260,12 +278,12 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
     val totalTableColumns = state.columns + hintTableColumns
 
     table {
-        style = "border-collapse: collapse;"
+        classes = setOf("nonogram-solution-table")
         for (hintRow in 0 until hintTableRows) {
             tr {
                 for (column in 0 until totalTableColumns) {
                     td {
-                        style = HINT_CELL_STYLE
+                        classes = setOf("nonogram-solution-hint-cell")
                         val hintColumnIndex = column - hintTableColumns
                         if (hintColumnIndex in puzzleDefinition.columnHints.indices) {
                             val hints = puzzleDefinition.columnHints[hintColumnIndex]
@@ -286,8 +304,8 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
             tr {
                 for (column in 0 until totalTableColumns) {
                     td {
-                        style = HINT_CELL_STYLE
                         if (column < hintTableColumns) {
+                            classes = setOf("nonogram-solution-hint-cell")
                             val hints = puzzleDefinition.rowHints[puzzleRow]
                             val hintIndex = hints.size - hintTableColumns + column
                             if (hintIndex in hints.indices) {
@@ -296,10 +314,9 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
                                 +""
                             }
                         } else {
-                            style = "border: 1px solid black;"
+                            classes = setOf("nonogram-solution-grid-cell")
                             val puzzleColumn = column - hintTableColumns
                             img {
-                                style = "vertical-align: middle;"
                                 src = state.getCell(puzzleRow, puzzleColumn).symbolImage
                             }
                         }
@@ -318,7 +335,7 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
 
 private fun DIV.addFooter() {
     sub {
-        +"Version 1.0.0"
+        +"Version 1.1.0"
     }
     br
     sub {
@@ -327,7 +344,7 @@ private fun DIV.addFooter() {
     br
     sub {
         a {
-            href = "3RD-PARTY-LICENSES.txt"
+            href = "nonogram-solver-third-party-notices.txt"
             +"Third-Party License Notice"
         }
     }
