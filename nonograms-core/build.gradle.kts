@@ -96,6 +96,14 @@ kotlin {
 }
 
 benchmark {
+    configurations {
+        getByName("main") {
+            mode = "avgt"
+            outputTimeUnit = "ms"
+            warmups = 3
+            iterations = 3
+        }
+    }
     targets {
         register("jvmBenchmarks")
         register("jsBenchmarks")
