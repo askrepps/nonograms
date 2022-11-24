@@ -62,7 +62,7 @@ kotlin {
         val commonBenchmark by creating {
             dependsOn(commonMain.get())
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.6")
             }
         }
         jvm().compilations["main"].defaultSourceSet {

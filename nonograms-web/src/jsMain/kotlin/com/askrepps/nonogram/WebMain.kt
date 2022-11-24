@@ -37,6 +37,7 @@ import kotlinx.html.input
 import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onInputFunction
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.html.p
 import kotlinx.html.sub
 import kotlinx.html.table
@@ -47,7 +48,6 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
-import org.w3c.dom.events.Event
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
