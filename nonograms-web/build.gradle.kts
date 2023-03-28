@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+
 plugins {
     kotlin("multiplatform")
 }
@@ -33,21 +36,28 @@ repositories {
     mavenCentral()
 }
 
+rootProject.plugins.withType(YarnPlugin::class.java) {
+    rootProject.the<NodeJsRootExtension>().apply {
+        versions.webpack.version = "5.76.2"
+    }
+}
+
 kotlin {
     js {
-        browser()
-    }
-
-    js().compilations["main"].defaultSourceSet {
-        dependencies {
-            implementation(project(":nonograms-core"))
-            implementation(kotlin("stdlib-js"))
-            implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.8.0")
+        browser {
+            binaries.executable()
         }
-    }
-    js().compilations["test"].defaultSourceSet {
-        dependencies {
-            implementation(kotlin("test-js"))
+        compilations["main"].defaultSourceSet {
+            dependencies {
+                implementation(project(":nonograms-core"))
+                implementation(kotlin("stdlib-js"))
+                implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.8.0")
+            }
+        }
+        compilations["test"].defaultSourceSet {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
         }
     }
 
