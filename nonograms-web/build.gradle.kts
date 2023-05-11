@@ -38,7 +38,7 @@ repositories {
 
 rootProject.plugins.withType(YarnPlugin::class.java) {
     rootProject.the<NodeJsRootExtension>().apply {
-        versions.webpack.version = "5.76.2"
+        versions.webpack.version = "5.82.1"
     }
 }
 
