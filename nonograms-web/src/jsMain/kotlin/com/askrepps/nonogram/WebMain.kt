@@ -332,7 +332,7 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
 
 private fun DIV.addFooter() {
     sub {
-        +"Version 1.1.1"
+        +"Version 1.1.2"
     }
     br
     sub {
