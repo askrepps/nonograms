@@ -1,8 +1,8 @@
 The nonogram solver application contains the following 3rd party libraries:
 
-org.jetbrains.kotlin:kotlin-dom-api-compat:1.9.22
-org.jetbrains.kotlin:kotlin-stdlib-js:1.9.22
-org.jetbrains.kotlinx:kotlinx-html-js:0.10.1
+org.jetbrains.kotlin:kotlin-dom-api-compat:2.0.20
+org.jetbrains.kotlin:kotlin-stdlib-js:2.0.20
+org.jetbrains.kotlinx:kotlinx-html-js:0.11.0
 
 All 3rd party libraries were licensed under the terms of the
 Apache 2.0 license, whose full text is included below:

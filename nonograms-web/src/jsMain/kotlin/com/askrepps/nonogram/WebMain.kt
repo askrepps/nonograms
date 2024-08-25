@@ -49,7 +49,6 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.asList
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 const val APP_ROOT_ID = "nonogram-solver-root"
@@ -71,7 +70,6 @@ private fun clearPage() {
     }
 }
 
-@OptIn(ExperimentalTime::class)
 private fun renderPage(pageCreator: DIV.() -> Unit) {
     val renderTime = measureTime {
         clearPage()
@@ -247,7 +245,6 @@ private fun parseHintInput(input: String, label: String): List<List<Int>> {
         }.ifEmpty { fail() }
 }
 
-@OptIn(ExperimentalTime::class)
 private fun solveEnteredPuzzle() {
     var puzzle: PuzzleDefinition? = null
     var solution: PuzzleSolution? = null
@@ -335,11 +332,11 @@ private fun DIV.addResultsTable(puzzleDefinition: PuzzleDefinition, solution: Pu
 
 private fun DIV.addFooter() {
     sub {
-        +"Version 1.1.0"
+        +"Version 1.1.1"
     }
     br
     sub {
-        +"Copyright 2020-2022 © Andrew Krepps"
+        +"Copyright 2020-2024 © Andrew Krepps"
     }
     br
     sub {

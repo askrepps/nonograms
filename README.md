@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.askrepps:nonograms-core:1.1.0"
+    implementation "com.askrepps:nonograms-core:1.1.1"
 }
 ```
 
@@ -96,4 +96,4 @@ X X X X X X X X
 ```
 
 <hr>
-<sub>Copyright © 2020-2022 Andrew Krepps</sub>
+<sub>Copyright © 2020-2024 Andrew Krepps</sub>

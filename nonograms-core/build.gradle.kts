@@ -33,7 +33,7 @@ repositories {
 }
 
 group = "com.askrepps"
-version = "1.1.0"
+version = "1.1.1"
 
 kotlin {
     jvm()
@@ -55,7 +55,7 @@ kotlin {
         }
         jvm().compilations["main"].defaultSourceSet {
             dependencies {
-                implementation(kotlin("stdlib-jdk8"))
+                implementation(kotlin("stdlib"))
             }
         }
         jvm().compilations["test"].defaultSourceSet {

@@ -27,7 +27,7 @@ plugins {
 }
 
 group = "com.askrepps"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -42,7 +42,7 @@ kotlin {
             dependencies {
                 implementation(project(":nonograms-core"))
                 implementation(kotlin("stdlib-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.10.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.11.0")
             }
         }
         compilations["test"].defaultSourceSet {
@@ -50,9 +50,5 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-    }
-
-    sourceSets.all {
-        languageSettings.optIn("kotlin.RequiresOptIn")
     }
 }
