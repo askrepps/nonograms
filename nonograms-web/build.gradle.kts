@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+
 /*
  * MIT License
  *
@@ -31,6 +34,12 @@ version = "1.1.2"
 
 repositories {
     mavenCentral()
+}
+
+rootProject.plugins.withType(YarnPlugin::class.java) {
+    rootProject.the<NodeJsRootExtension>().apply {
+        versions.webpack.version = "5.94.0"
+    }
 }
 
 kotlin {
